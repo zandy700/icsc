@@ -13,7 +13,7 @@
 
   var REVEAL_SEL =
     ".section-title, .section-lead, .card, .steps li, .review, " +
-    ".stats-band .stat, #signup .signup-form, #contact .contact-grid > *";
+    ".stats-band .stat, #contact .contact-grid > *";
 
   /* ---------- 1. Scroll reveal ---------- */
   (function reveal() {

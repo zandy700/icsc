@@ -56,7 +56,7 @@ const I18N = {
     "reviews.r2.who": "— ICSC Client",
 
     "signup.title": "Sign Up for Free Tutoring",
-    "signup.lead": "Fill out the form below. Email is required; you can pick \"N/A\" or \"Skip\" for fields you'd rather not answer.",
+    "signup.lead": "Four quick steps — about 2 minutes. Only your email is required; skip anything you'd rather not answer.",
     "form.email": "Email address *",
     "form.lang": "Native language",
     "form.testdate": "Citizenship test date",
@@ -86,6 +86,40 @@ const I18N = {
     "scrub.b3": "Sign up today — it's completely free",
     "scrub.cta": "Sign Up — It's Free",
     "scrub.hint": "Scroll to explore",
+
+    "su.eyebrow": "Free · 1-on-1 · On Zoom",
+    "su.s1": "Contact",
+    "su.s2": "About you",
+    "su.s3": "Schedule",
+    "su.s4": "Review",
+    "su.p1": "How can we reach you?",
+    "su.p2": "Tell us a little about you",
+    "su.p3": "When can you meet?",
+    "su.p4": "Almost done — check your details",
+    "su.next": "Next →",
+    "su.back": "← Back",
+    "su.stepof": "Step {n} of 4",
+    "su.err.email": "Please enter a valid email address.",
+    "su.edit": "Edit",
+    "su.none": "Not provided",
+    "su.sched.none": "Not decided yet",
+    "su.slots": "{n} time slots selected",
+    "su.slot1": "1 time slot selected",
+    "su.card.title": "Tutoring Pass",
+    "su.card.test": "Test date",
+    "su.card.week": "Your week",
+    "su.card.flip": "Tap the card to flip it",
+    "su.days": "{n} days to go",
+    "su.day1": "1 day to go",
+    "su.today": "Test day is today!",
+    "su.ready": "Ready",
+    "su.wk": "M,T,W,T,F,S,S",
+    "su.perk1": "100% free — always",
+    "su.perk2": "Matched with 1–2 student tutors",
+    "su.perk3": "We reply within a few days",
+    "su.sending": "Sending…",
+    "su.rv.email": "Email",
+    "su.rv.sched": "Schedule",
 
     "footer.tag": "A student-run program at Interlake High School."
   },
@@ -146,7 +180,7 @@ const I18N = {
     "reviews.r2.who": "— Cliente de ICSC",
 
     "signup.title": "Inscríbase para Tutoría Gratis",
-    "signup.lead": "Complete el formulario a continuación. El correo electrónico es obligatorio; puede elegir \"N/A\" u \"Omitir\" en los campos que prefiera no responder.",
+    "signup.lead": "Cuatro pasos rápidos — unos 2 minutos. Solo el correo es obligatorio; omita lo que prefiera no responder.",
     "form.email": "Correo electrónico *",
     "form.lang": "Idioma nativo",
     "form.testdate": "Fecha del examen de ciudadanía",
@@ -176,6 +210,40 @@ const I18N = {
     "scrub.b3": "Regístrate hoy — es totalmente gratis",
     "scrub.cta": "Inscríbete — Es Gratis",
     "scrub.hint": "Desplázate para explorar",
+
+    "su.eyebrow": "Gratis · Individual · Por Zoom",
+    "su.s1": "Contacto",
+    "su.s2": "Sobre usted",
+    "su.s3": "Horario",
+    "su.s4": "Revisar",
+    "su.p1": "¿Cómo podemos contactarle?",
+    "su.p2": "Cuéntenos un poco sobre usted",
+    "su.p3": "¿Cuándo puede reunirse?",
+    "su.p4": "Casi listo — revise sus datos",
+    "su.next": "Siguiente →",
+    "su.back": "← Atrás",
+    "su.stepof": "Paso {n} de 4",
+    "su.err.email": "Ingrese un correo electrónico válido.",
+    "su.edit": "Editar",
+    "su.none": "No indicado",
+    "su.sched.none": "Aún no decidido",
+    "su.slots": "{n} horarios seleccionados",
+    "su.slot1": "1 horario seleccionado",
+    "su.card.title": "Pase de Tutoría",
+    "su.card.test": "Fecha del examen",
+    "su.card.week": "Su semana",
+    "su.card.flip": "Toque la tarjeta para girarla",
+    "su.days": "Faltan {n} días",
+    "su.day1": "Falta 1 día",
+    "su.today": "¡El examen es hoy!",
+    "su.ready": "Listo",
+    "su.wk": "L,M,X,J,V,S,D",
+    "su.perk1": "100% gratis — siempre",
+    "su.perk2": "Con 1–2 tutores estudiantes",
+    "su.perk3": "Respondemos en pocos días",
+    "su.sending": "Enviando…",
+    "su.rv.email": "Correo",
+    "su.rv.sched": "Horario",
 
     "footer.tag": "Un programa dirigido por estudiantes de Interlake High School."
   },
@@ -236,7 +304,7 @@ const I18N = {
     "reviews.r2.who": "— ICSC 学员",
 
     "signup.title": "免费辅导报名",
-    "signup.lead": "请填写下方表格。电子邮箱为必填项；其他栏位可以选择 \"N/A\" 或 \"跳过\"。",
+    "signup.lead": "四个简单步骤，大约 2 分钟。只有电子邮箱是必填项，其他都可以跳过。",
     "form.email": "电子邮箱 *",
     "form.lang": "母语",
     "form.testdate": "入籍考试日期",
@@ -267,6 +335,40 @@ const I18N = {
     "scrub.cta": "立即免费报名",
     "scrub.hint": "向下滚动浏览",
 
+    "su.eyebrow": "免费 · 一对一 · Zoom 线上",
+    "su.s1": "联系方式",
+    "su.s2": "个人信息",
+    "su.s3": "时间安排",
+    "su.s4": "确认",
+    "su.p1": "我们如何联系您？",
+    "su.p2": "简单介绍一下您自己",
+    "su.p3": "您什么时候方便上课？",
+    "su.p4": "快完成了——请确认您的信息",
+    "su.next": "下一步 →",
+    "su.back": "← 上一步",
+    "su.stepof": "第 {n} 步，共 4 步",
+    "su.err.email": "请输入有效的电子邮箱地址。",
+    "su.edit": "修改",
+    "su.none": "未填写",
+    "su.sched.none": "尚未决定",
+    "su.slots": "已选 {n} 个时段",
+    "su.slot1": "已选 1 个时段",
+    "su.card.title": "辅导通行证",
+    "su.card.test": "考试日期",
+    "su.card.week": "您的一周",
+    "su.card.flip": "点击卡片即可翻转",
+    "su.days": "还有 {n} 天",
+    "su.day1": "还有 1 天",
+    "su.today": "今天就是考试日！",
+    "su.ready": "就绪",
+    "su.wk": "一,二,三,四,五,六,日",
+    "su.perk1": "完全免费",
+    "su.perk2": "配对 1–2 位学生导师",
+    "su.perk3": "几天内给您回复",
+    "su.sending": "提交中…",
+    "su.rv.email": "邮箱",
+    "su.rv.sched": "上课时间",
+
     "footer.tag": "Interlake 高中学生运营项目。"
   }
 };
@@ -283,6 +385,7 @@ function applyLang(lang) {
     b.classList.toggle("active", b.dataset.lang === lang);
   });
   try { localStorage.setItem("icsc_lang", lang); } catch {}
+  document.dispatchEvent(new CustomEvent("icsc:lang", { detail: lang }));
 }
 
 document.querySelectorAll(".lang-switch button").forEach(btn => {
@@ -300,51 +403,7 @@ document.querySelectorAll(".lang-switch button").forEach(btn => {
   else applyLang("en");
 })();
 
-// ---------- N/A toggle behavior ----------
-document.querySelectorAll('input[data-na-for]').forEach(cb => {
-  cb.addEventListener("change", () => {
-    const targetId = cb.getAttribute("data-na-for");
-    const field = document.getElementById(targetId);
-    if (!field) return;
-    if (cb.checked) {
-      field.dataset.prev = field.value;
-      field.value = "N/A";
-      field.disabled = true;
-    } else {
-      field.disabled = false;
-      field.value = field.dataset.prev || "";
-    }
-  });
-});
-
-// ---------- Per-day schedule picker ----------
-(() => {
-  const list = document.getElementById("day_list");
-  if (!list) return;
-
-  // Checking a day reveals its time chips; unchecking clears them so
-  // hidden selections never get submitted.
-  list.querySelectorAll(".day-toggle").forEach(toggle => {
-    const row = toggle.closest(".day-row");
-    toggle.addEventListener("change", () => {
-      row.classList.toggle("is-open", toggle.checked);
-      if (!toggle.checked) {
-        row.querySelectorAll('.chip input[type="checkbox"]').forEach(c => { c.checked = false; });
-      }
-    });
-  });
-
-  // "Skip" blanks the whole picker.
-  const skip = document.getElementById("skip_schedule");
-  if (skip) {
-    skip.addEventListener("change", () => {
-      list.classList.toggle("is-disabled", skip.checked);
-      if (!skip.checked) return;
-      list.querySelectorAll('input[type="checkbox"]').forEach(c => { c.checked = false; });
-      list.querySelectorAll(".day-row").forEach(r => r.classList.remove("is-open"));
-    });
-  }
-})();
+// Signup wizard, N/A toggles and the schedule picker live in signup.js.
 
 // ---------- Footer year ----------
 document.getElementById("year").textContent = new Date().getFullYear();

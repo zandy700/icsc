@@ -5,52 +5,84 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Thank You — Interlake Citizenship Services Club</title>
   <meta name="robots" content="noindex" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=3" />
 </head>
-<body>
-  <main class="section" style="min-height: 70vh; display: flex; align-items: center;">
-    <div class="container" style="text-align:center;">
-      <h1 style="font-family:'Fraunces',serif;color:var(--navy);font-size:2.6rem;margin:0 0 16px;">
-        Thank you! 🎉
-      </h1>
-      <p style="font-size:1.15rem;max-width:600px;margin:0 auto 20px;color:var(--ink-2);">
-        We received your signup. An ICSC tutor coordinator will reach out within a few days to confirm
-        your match and your first Zoom session.
-      </p>
+<body class="signup ty">
+  <div class="signup-sky" aria-hidden="true">
+    <span class="su-stars su-stars-a"></span>
+    <span class="su-stars su-stars-b"></span>
+    <span class="su-glow"></span>
+  </div>
 
-      <div style="max-width:600px;margin:0 auto 28px;padding:16px 20px;background:var(--cream);border:1px solid var(--border);border-radius:12px;text-align:left;">
-        <p style="margin:0 0 8px;font-weight:700;color:var(--navy);">
-          📧 Don’t see our email?
-        </p>
-        <p style="margin:0;font-size:0.98rem;color:var(--ink-2);">
-          Please check your <strong>Spam</strong> or <strong>Junk</strong> folder.
-          Emails from <em>interlakecitizenshipclub@gmail.com</em> sometimes land there.
-          If you find it, mark it as <strong>“Not spam”</strong> so future messages reach your inbox.
-        </p>
-        <hr style="border:none;border-top:1px solid var(--border);margin:14px 0;" />
-        <p style="margin:0 0 6px;font-weight:600;color:var(--navy);font-size:0.95rem;">
-          Español
-        </p>
-        <p style="margin:0 0 12px;font-size:0.92rem;color:var(--ink-2);">
-          ¿No ve nuestro correo? Revise su carpeta de <strong>spam</strong> o <strong>correo no deseado</strong>
-          y marque el mensaje como <strong>“No es spam”</strong>.
-        </p>
-        <p style="margin:0 0 6px;font-weight:600;color:var(--navy);font-size:0.95rem;">
-          中文
-        </p>
-        <p style="margin:0;font-size:0.92rem;color:var(--ink-2);">
-          没收到我们的邮件？请检查您的<strong>垃圾邮件</strong>或<strong>垃圾箱</strong>，
-          并将我们的邮件标记为<strong>“不是垃圾邮件”</strong>。
-        </p>
-      </div>
+  <main class="ty-card">
+    <svg class="ty-check" viewBox="0 0 96 96" aria-hidden="true">
+      <circle cx="48" cy="48" r="46" />
+      <path d="M29 50 L42 63 L68 35" />
+    </svg>
+    <h1 class="ty-title" id="ty-title">Thank you! 🎉</h1>
+    <p class="ty-lead" id="ty-lead">
+      We received your signup. An ICSC tutor coordinator will reach out within a few days to confirm
+      your match and your first Zoom session.
+    </p>
 
-      <p style="font-size:1.05rem;">
-        ¡Gracias! 谢谢！
+    <div class="ty-note">
+      <p><strong>📧 Don’t see our email?</strong></p>
+      <p>
+        Please check your <strong>Spam</strong> or <strong>Junk</strong> folder.
+        Emails from <em>interlakecitizenshipclub@gmail.com</em> sometimes land there.
+        If you find it, mark it as <strong>“Not spam”</strong> so future messages reach your inbox.
       </p>
-      <p style="margin-top:36px;">
-        <a class="btn btn-primary" href="index.html">← Back to homepage</a>
-      </p>
+      <hr />
+      <p><strong>Español</strong> — ¿No ve nuestro correo? Revise su carpeta de <strong>spam</strong> o
+        <strong>correo no deseado</strong> y marque el mensaje como <strong>“No es spam”</strong>.</p>
+      <hr />
+      <p><strong>中文</strong> — 没收到我们的邮件？请检查您的<strong>垃圾邮件</strong>或<strong>垃圾箱</strong>，
+        并将我们的邮件标记为<strong>“不是垃圾邮件”</strong>。</p>
     </div>
+
+    <p><a class="btn btn-primary" id="ty-back" href="index.html">← Back to homepage</a></p>
   </main>
+
+  <script>
+    (function () {
+      var copy = {
+        es: ["¡Gracias! 🎉", "Recibimos su inscripción. Un coordinador de ICSC se comunicará con usted en unos días para confirmar su tutor y su primera sesión por Zoom.", "← Volver al inicio"],
+        zh: ["谢谢！🎉", "我们已收到您的报名。ICSC 导师协调员将在几天内与您联系，确认您的导师配对和第一次 Zoom 课程。", "← 返回首页"]
+      };
+      var lang = null;
+      try { lang = localStorage.getItem("icsc_lang"); } catch (e) {}
+      if (copy[lang]) {
+        document.documentElement.lang = lang === "zh" ? "zh-CN" : lang;
+        document.getElementById("ty-title").textContent = copy[lang][0];
+        document.getElementById("ty-lead").textContent = copy[lang][1];
+        document.getElementById("ty-back").textContent = copy[lang][2];
+      }
+
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      setTimeout(function () {
+        var check = document.querySelector(".ty-check").getBoundingClientRect();
+        var layer = document.createElement("div");
+        layer.className = "su-confetti";
+        layer.style.left = check.left + check.width / 2 + "px";
+        layer.style.top = check.top + check.height / 2 + "px";
+        var colors = ["#f5c542", "#ffdd6b", "#14306a", "#1e4391", "#ffffff", "#c0392b"];
+        for (var i = 0; i < 90; i++) {
+          var p = document.createElement("i");
+          var a = Math.random() * Math.PI * 2, dist = 120 + Math.random() * 300;
+          p.style.setProperty("--dx", Math.cos(a) * dist + "px");
+          p.style.setProperty("--dy", Math.sin(a) * dist * 0.8 - 170 + "px");
+          p.style.setProperty("--rot", Math.random() * 900 - 450 + "deg");
+          p.style.background = colors[i % colors.length];
+          p.style.animationDelay = Math.random() * 90 + "ms";
+          layer.appendChild(p);
+        }
+        document.body.appendChild(layer);
+        setTimeout(function () { layer.remove(); }, 1900);
+      }, 900);
+    })();
+  </script>
 </body>
 </html>

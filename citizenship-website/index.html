@@ -47,7 +47,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=3" />
 </head>
 <body>
 
@@ -183,181 +183,309 @@
       </div>
     </section>
 
-    <section id="signup" class="section">
-      <div class="container">
-        <h2 class="section-title" data-i18n="signup.title">Sign Up for Free Tutoring</h2>
-        <p class="section-lead" data-i18n="signup.lead">Fill out the form below. Email is required; you can pick "N/A" or "Skip" for fields you'd rather not answer.</p>
+    <section id="signup" class="signup" aria-labelledby="signup-title">
+      <div class="signup-sky" aria-hidden="true">
+        <span class="su-stars su-stars-a"></span>
+        <span class="su-stars su-stars-b"></span>
+        <span class="su-glow"></span>
+      </div>
 
-        <form id="signup-form" class="signup-form" action="https://formsubmit.co/interlakecitizenshipclub@gmail.com" method="POST">
-          <input type="hidden" name="_subject" value="New ICSC Signup" />
-          <input type="hidden" name="_template" value="table" />
-          <input type="hidden" name="_captcha" value="true" />
-          <input type="hidden" name="_next" value="thanks.html" />
-          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+      <div class="container signup-inner">
+        <header class="signup-head">
+          <p class="su-eyebrow" data-i18n="su.eyebrow">Free · 1-on-1 · On Zoom</p>
+          <h2 id="signup-title" class="su-title" data-i18n="signup.title">Sign Up for Free Tutoring</h2>
+          <p class="su-lead" data-i18n="signup.lead">Four quick steps — about 2 minutes. Only your email is required; skip anything you'd rather not answer.</p>
+        </header>
 
-          <div class="form-row">
-            <label for="email" data-i18n="form.email">Email address <span class="req">*</span></label>
-            <input type="email" id="email" name="email" placeholder="you@example.com" required />
-          </div>
-
-          <div class="form-row">
-            <label for="native_language" data-i18n="form.lang">Native language</label>
-            <input type="text" id="native_language" name="native_language" placeholder="e.g. Spanish, Mandarin, Vietnamese" />
-            <label class="na-toggle"><input type="checkbox" data-na-for="native_language" /> <span data-i18n="form.na">N/A — prefer not to say</span></label>
-          </div>
-
-          <div class="form-row">
-            <label for="test_date" data-i18n="form.testdate">Citizenship test date</label>
-            <input type="date" id="test_date" name="test_date" />
-            <label class="na-toggle"><input type="checkbox" data-na-for="test_date" /> <span data-i18n="form.na.date">N/A — not scheduled yet</span></label>
-          </div>
-
-          <div class="form-row">
-            <label for="phone" data-i18n="form.phone">Phone number</label>
-            <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567" />
-            <label class="na-toggle"><input type="checkbox" data-na-for="phone" /> <span data-i18n="form.na">N/A — prefer not to say</span></label>
-          </div>
-
-          <div class="form-row schedule-block">
-            <label class="block-label" data-i18n="form.sched.title">Preferred meeting times (Pacific Time)</label>
-            <p class="block-hint" data-i18n="form.sched.hint">Pick each day that works, then choose your times for that day. Sessions are 30 minutes.</p>
-
-            <label class="na-toggle skip-toggle">
-              <input type="checkbox" id="skip_schedule" name="skip_schedule" value="Yes" />
-              <span data-i18n="form.sched.skip">Skip — I haven't decided yet</span>
-            </label>
-
-            <div class="day-list" id="day_list">
-              <div class="day-row" data-day="monday">
-                <label class="day-head">
-                  <input type="checkbox" class="day-toggle" data-target="times_monday" />
-                  <span class="day-name" data-i18n="form.day.mon">Monday</span>
-                  <span class="day-hours">4:00 PM – 10:00 PM</span>
-                </label>
-                <div class="time-chips" id="times_monday">
-                  <label class="chip"><input type="checkbox" name="Monday" value="4:00 PM" /><span>4:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Monday" value="5:00 PM" /><span>5:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Monday" value="6:00 PM" /><span>6:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Monday" value="7:00 PM" /><span>7:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Monday" value="8:00 PM" /><span>8:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Monday" value="9:00 PM" /><span>9:00 PM</span></label>
+        <div class="signup-grid">
+          <aside class="su-side">
+            <div class="su-stage" aria-hidden="true">
+              <div class="su-float">
+                <div class="su-tilt">
+                  <div class="su-card" id="su-card">
+                    <div class="su-face su-front">
+                      <div class="su-card-top">
+                        <span class="su-card-logo">★ ICSC</span>
+                        <span class="su-card-chip"></span>
+                      </div>
+                      <p class="su-card-label" data-i18n="su.card.title">Tutoring Pass</p>
+                      <p class="su-card-email" data-card="email">you@example.com</p>
+                      <div class="su-card-meta">
+                        <div><span class="su-card-k" data-i18n="form.lang">Native language</span><span class="su-card-v" data-card="lang">—</span></div>
+                        <div><span class="su-card-k" data-i18n="su.card.test">Test date</span><span class="su-card-v" data-card="date">—</span></div>
+                      </div>
+                      <p class="su-card-count" data-card="count"></p>
+                      <span class="su-stamp" data-i18n="su.ready">Ready</span>
+                      <span class="su-sheen"></span>
+                    </div>
+                    <div class="su-face su-back">
+                      <div class="su-card-top">
+                        <span class="su-card-logo">★ ICSC</span>
+                        <span class="su-card-label" data-i18n="su.card.week">Your week</span>
+                      </div>
+                      <div class="su-week">
+                  <div class="su-wday" data-wday="monday"><span class="su-wbar"><i></i></span><span class="su-wlabel">M</span></div>
+                  <div class="su-wday" data-wday="tuesday"><span class="su-wbar"><i></i></span><span class="su-wlabel">T</span></div>
+                  <div class="su-wday" data-wday="wednesday"><span class="su-wbar"><i></i></span><span class="su-wlabel">W</span></div>
+                  <div class="su-wday" data-wday="thursday"><span class="su-wbar"><i></i></span><span class="su-wlabel">T</span></div>
+                  <div class="su-wday" data-wday="friday"><span class="su-wbar"><i></i></span><span class="su-wlabel">F</span></div>
+                  <div class="su-wday" data-wday="saturday"><span class="su-wbar"><i></i></span><span class="su-wlabel">S</span></div>
+                  <div class="su-wday" data-wday="sunday"><span class="su-wbar"><i></i></span><span class="su-wlabel">S</span></div>
+                      </div>
+                      <p class="su-card-slots" data-card="slots">0</p>
+                      <span class="su-sheen"></span>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="day-row" data-day="tuesday">
-                <label class="day-head">
-                  <input type="checkbox" class="day-toggle" data-target="times_tuesday" />
-                  <span class="day-name" data-i18n="form.day.tue">Tuesday</span>
-                  <span class="day-hours">4:00 PM – 10:00 PM</span>
-                </label>
-                <div class="time-chips" id="times_tuesday">
-                  <label class="chip"><input type="checkbox" name="Tuesday" value="4:00 PM" /><span>4:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Tuesday" value="5:00 PM" /><span>5:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Tuesday" value="6:00 PM" /><span>6:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Tuesday" value="7:00 PM" /><span>7:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Tuesday" value="8:00 PM" /><span>8:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Tuesday" value="9:00 PM" /><span>9:00 PM</span></label>
-                </div>
-              </div>
-              <div class="day-row" data-day="wednesday">
-                <label class="day-head">
-                  <input type="checkbox" class="day-toggle" data-target="times_wednesday" />
-                  <span class="day-name" data-i18n="form.day.wed">Wednesday</span>
-                  <span class="day-hours">4:00 PM – 10:00 PM</span>
-                </label>
-                <div class="time-chips" id="times_wednesday">
-                  <label class="chip"><input type="checkbox" name="Wednesday" value="4:00 PM" /><span>4:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Wednesday" value="5:00 PM" /><span>5:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Wednesday" value="6:00 PM" /><span>6:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Wednesday" value="7:00 PM" /><span>7:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Wednesday" value="8:00 PM" /><span>8:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Wednesday" value="9:00 PM" /><span>9:00 PM</span></label>
-                </div>
-              </div>
-              <div class="day-row" data-day="thursday">
-                <label class="day-head">
-                  <input type="checkbox" class="day-toggle" data-target="times_thursday" />
-                  <span class="day-name" data-i18n="form.day.thu">Thursday</span>
-                  <span class="day-hours">4:00 PM – 10:00 PM</span>
-                </label>
-                <div class="time-chips" id="times_thursday">
-                  <label class="chip"><input type="checkbox" name="Thursday" value="4:00 PM" /><span>4:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Thursday" value="5:00 PM" /><span>5:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Thursday" value="6:00 PM" /><span>6:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Thursday" value="7:00 PM" /><span>7:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Thursday" value="8:00 PM" /><span>8:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Thursday" value="9:00 PM" /><span>9:00 PM</span></label>
-                </div>
-              </div>
-              <div class="day-row" data-day="friday">
-                <label class="day-head">
-                  <input type="checkbox" class="day-toggle" data-target="times_friday" />
-                  <span class="day-name" data-i18n="form.day.fri">Friday</span>
-                  <span class="day-hours">4:00 PM – 10:00 PM</span>
-                </label>
-                <div class="time-chips" id="times_friday">
-                  <label class="chip"><input type="checkbox" name="Friday" value="4:00 PM" /><span>4:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Friday" value="5:00 PM" /><span>5:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Friday" value="6:00 PM" /><span>6:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Friday" value="7:00 PM" /><span>7:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Friday" value="8:00 PM" /><span>8:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Friday" value="9:00 PM" /><span>9:00 PM</span></label>
-                </div>
-              </div>
-              <div class="day-row" data-day="saturday">
-                <label class="day-head">
-                  <input type="checkbox" class="day-toggle" data-target="times_saturday" />
-                  <span class="day-name" data-i18n="form.day.sat">Saturday</span>
-                  <span class="day-hours">9:00 AM – 10:00 PM</span>
-                </label>
-                <div class="time-chips" id="times_saturday">
-                  <label class="chip"><input type="checkbox" name="Saturday" value="9:00 AM" /><span>9:00 AM</span></label>
-                  <label class="chip"><input type="checkbox" name="Saturday" value="10:00 AM" /><span>10:00 AM</span></label>
-                  <label class="chip"><input type="checkbox" name="Saturday" value="11:00 AM" /><span>11:00 AM</span></label>
-                  <label class="chip"><input type="checkbox" name="Saturday" value="12:00 PM" /><span>12:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Saturday" value="1:00 PM" /><span>1:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Saturday" value="2:00 PM" /><span>2:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Saturday" value="3:00 PM" /><span>3:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Saturday" value="4:00 PM" /><span>4:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Saturday" value="5:00 PM" /><span>5:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Saturday" value="6:00 PM" /><span>6:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Saturday" value="7:00 PM" /><span>7:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Saturday" value="8:00 PM" /><span>8:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Saturday" value="9:00 PM" /><span>9:00 PM</span></label>
-                </div>
-              </div>
-              <div class="day-row" data-day="sunday">
-                <label class="day-head">
-                  <input type="checkbox" class="day-toggle" data-target="times_sunday" />
-                  <span class="day-name" data-i18n="form.day.sun">Sunday</span>
-                  <span class="day-hours">9:00 AM – 10:00 PM</span>
-                </label>
-                <div class="time-chips" id="times_sunday">
-                  <label class="chip"><input type="checkbox" name="Sunday" value="9:00 AM" /><span>9:00 AM</span></label>
-                  <label class="chip"><input type="checkbox" name="Sunday" value="10:00 AM" /><span>10:00 AM</span></label>
-                  <label class="chip"><input type="checkbox" name="Sunday" value="11:00 AM" /><span>11:00 AM</span></label>
-                  <label class="chip"><input type="checkbox" name="Sunday" value="12:00 PM" /><span>12:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Sunday" value="1:00 PM" /><span>1:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Sunday" value="2:00 PM" /><span>2:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Sunday" value="3:00 PM" /><span>3:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Sunday" value="4:00 PM" /><span>4:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Sunday" value="5:00 PM" /><span>5:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Sunday" value="6:00 PM" /><span>6:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Sunday" value="7:00 PM" /><span>7:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Sunday" value="8:00 PM" /><span>8:00 PM</span></label>
-                  <label class="chip"><input type="checkbox" name="Sunday" value="9:00 PM" /><span>9:00 PM</span></label>
-                </div>
-              </div>
+              <div class="su-shadow"></div>
+              <p class="su-flip-hint" data-i18n="su.card.flip">Tap the card to flip it</p>
             </div>
-          </div>
 
-          <div class="form-row">
-            <label for="notes" data-i18n="form.notes">Anything else we should know? (optional)</label>
-            <textarea id="notes" name="notes" rows="4" placeholder=""></textarea>
-          </div>
+            <ul class="su-perks">
+              <li><span class="su-perk-ico" aria-hidden="true">✦</span><span data-i18n="su.perk1">100% free — always</span></li>
+              <li><span class="su-perk-ico" aria-hidden="true">✦</span><span data-i18n="su.perk2">Matched with 1–2 student tutors</span></li>
+              <li><span class="su-perk-ico" aria-hidden="true">✦</span><span data-i18n="su.perk3">We reply within a few days</span></li>
+            </ul>
+          </aside>
 
-          <button type="submit" class="btn btn-primary btn-large" data-i18n="form.submit">Submit Signup</button>
-          <p class="form-foot" data-i18n="form.foot">By submitting, you consent to be contacted at the email or phone number provided.</p>
-        </form>
+          <div class="su-form-wrap">
+            <form id="signup-form" class="signup-form su-form" action="https://formsubmit.co/interlakecitizenshipclub@gmail.com" method="POST">
+              <input type="hidden" name="_subject" value="New ICSC Signup" />
+              <input type="hidden" name="_template" value="table" />
+              <input type="hidden" name="_captcha" value="true" />
+              <input type="hidden" name="_next" value="https://interlakecitizenship.xyz/thanks.html" />
+              <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+
+              <ol class="su-steps">
+                <li class="su-step is-active" data-go="0"><button type="button"><span class="su-dot">1</span><span class="su-step-name" data-i18n="su.s1">Contact</span></button></li>
+                <li class="su-step" data-go="1"><button type="button"><span class="su-dot">2</span><span class="su-step-name" data-i18n="su.s2">About you</span></button></li>
+                <li class="su-step" data-go="2"><button type="button"><span class="su-dot">3</span><span class="su-step-name" data-i18n="su.s3">Schedule</span></button></li>
+                <li class="su-step" data-go="3"><button type="button"><span class="su-dot">4</span><span class="su-step-name" data-i18n="su.s4">Review</span></button></li>
+              </ol>
+              <div class="su-progress" aria-hidden="true"><span></span></div>
+
+              <div class="su-panels">
+                <fieldset class="su-panel is-active" data-step="0">
+                  <legend class="su-panel-title" data-i18n="su.p1">How can we reach you?</legend>
+                  <div class="su-field">
+                    <input type="email" id="email" name="email" placeholder=" " autocomplete="email" required aria-describedby="email-err" />
+                    <label for="email" data-i18n="form.email">Email address *</label>
+                    <span class="su-line" aria-hidden="true"></span>
+                    <p class="su-err" id="email-err" data-i18n="su.err.email" hidden>Please enter a valid email address.</p>
+                  </div>
+                  <div class="su-field">
+                    <input type="tel" id="phone" name="phone" placeholder=" " autocomplete="tel" />
+                    <label for="phone" data-i18n="form.phone">Phone number</label>
+                    <span class="su-line" aria-hidden="true"></span>
+                    <label class="su-na"><input type="checkbox" data-na-for="phone" /><span class="su-switch" aria-hidden="true"></span><span data-i18n="form.na">N/A — prefer not to say</span></label>
+                  </div>
+                </fieldset>
+
+                <fieldset class="su-panel" data-step="1">
+                  <legend class="su-panel-title" data-i18n="su.p2">Tell us a little about you</legend>
+                  <div class="su-field">
+                    <input type="text" id="native_language" name="native_language" placeholder=" " list="lang-list" />
+                    <label for="native_language" data-i18n="form.lang">Native language</label>
+                    <span class="su-line" aria-hidden="true"></span>
+                    <datalist id="lang-list">
+                      <option value="Spanish"></option><option value="Mandarin"></option><option value="Cantonese"></option>
+                      <option value="Vietnamese"></option><option value="Korean"></option><option value="Tagalog"></option>
+                      <option value="Russian"></option><option value="Arabic"></option><option value="Hindi"></option>
+                      <option value="Ukrainian"></option><option value="Portuguese"></option><option value="Amharic"></option>
+                    </datalist>
+                    <label class="su-na"><input type="checkbox" data-na-for="native_language" /><span class="su-switch" aria-hidden="true"></span><span data-i18n="form.na">N/A — prefer not to say</span></label>
+                  </div>
+                  <div class="su-field su-field-date">
+                    <input type="date" id="test_date" name="test_date" placeholder=" " />
+                    <label for="test_date" data-i18n="form.testdate">Citizenship test date</label>
+                    <span class="su-line" aria-hidden="true"></span>
+                    <label class="su-na"><input type="checkbox" data-na-for="test_date" /><span class="su-switch" aria-hidden="true"></span><span data-i18n="form.na.date">N/A — not scheduled yet</span></label>
+                  </div>
+                </fieldset>
+
+                <fieldset class="su-panel" data-step="2">
+                  <legend class="su-panel-title" data-i18n="su.p3">When can you meet?</legend>
+                  <p class="su-hint"><span data-i18n="form.sched.title">Preferred meeting times (Pacific Time)</span> — <span data-i18n="form.sched.hint">Pick each day that works, then choose your times for that day. Sessions are 30 minutes.</span></p>
+                  <div class="su-sched-bar">
+                    <label class="su-na su-skip"><input type="checkbox" id="skip_schedule" name="skip_schedule" value="Yes" /><span class="su-switch" aria-hidden="true"></span><span data-i18n="form.sched.skip">Skip — I haven't decided yet</span></label>
+                    <span class="su-slot-total" aria-live="polite"></span>
+                  </div>
+                  <div class="su-days" id="day_list">
+                <div class="su-day" data-day="monday">
+                  <label class="su-day-head">
+                    <input type="checkbox" class="day-toggle" />
+                    <span class="su-day-box" aria-hidden="true"></span>
+                    <span class="su-day-name" data-i18n="form.day.mon">Monday</span>
+                    <span class="su-day-count" aria-hidden="true"></span>
+                    <span class="su-day-hours">4:00 PM – 10:00 PM</span>
+                  </label>
+                  <div class="su-times">
+                    <div class="su-times-inner">
+                      <label class="chip" style="--i:0"><input type="checkbox" name="Monday" value="4:00 PM" /><span>4:00 PM</span></label>
+                      <label class="chip" style="--i:1"><input type="checkbox" name="Monday" value="5:00 PM" /><span>5:00 PM</span></label>
+                      <label class="chip" style="--i:2"><input type="checkbox" name="Monday" value="6:00 PM" /><span>6:00 PM</span></label>
+                      <label class="chip" style="--i:3"><input type="checkbox" name="Monday" value="7:00 PM" /><span>7:00 PM</span></label>
+                      <label class="chip" style="--i:4"><input type="checkbox" name="Monday" value="8:00 PM" /><span>8:00 PM</span></label>
+                      <label class="chip" style="--i:5"><input type="checkbox" name="Monday" value="9:00 PM" /><span>9:00 PM</span></label>
+                    </div>
+                  </div>
+                </div>
+                <div class="su-day" data-day="tuesday">
+                  <label class="su-day-head">
+                    <input type="checkbox" class="day-toggle" />
+                    <span class="su-day-box" aria-hidden="true"></span>
+                    <span class="su-day-name" data-i18n="form.day.tue">Tuesday</span>
+                    <span class="su-day-count" aria-hidden="true"></span>
+                    <span class="su-day-hours">4:00 PM – 10:00 PM</span>
+                  </label>
+                  <div class="su-times">
+                    <div class="su-times-inner">
+                      <label class="chip" style="--i:0"><input type="checkbox" name="Tuesday" value="4:00 PM" /><span>4:00 PM</span></label>
+                      <label class="chip" style="--i:1"><input type="checkbox" name="Tuesday" value="5:00 PM" /><span>5:00 PM</span></label>
+                      <label class="chip" style="--i:2"><input type="checkbox" name="Tuesday" value="6:00 PM" /><span>6:00 PM</span></label>
+                      <label class="chip" style="--i:3"><input type="checkbox" name="Tuesday" value="7:00 PM" /><span>7:00 PM</span></label>
+                      <label class="chip" style="--i:4"><input type="checkbox" name="Tuesday" value="8:00 PM" /><span>8:00 PM</span></label>
+                      <label class="chip" style="--i:5"><input type="checkbox" name="Tuesday" value="9:00 PM" /><span>9:00 PM</span></label>
+                    </div>
+                  </div>
+                </div>
+                <div class="su-day" data-day="wednesday">
+                  <label class="su-day-head">
+                    <input type="checkbox" class="day-toggle" />
+                    <span class="su-day-box" aria-hidden="true"></span>
+                    <span class="su-day-name" data-i18n="form.day.wed">Wednesday</span>
+                    <span class="su-day-count" aria-hidden="true"></span>
+                    <span class="su-day-hours">4:00 PM – 10:00 PM</span>
+                  </label>
+                  <div class="su-times">
+                    <div class="su-times-inner">
+                      <label class="chip" style="--i:0"><input type="checkbox" name="Wednesday" value="4:00 PM" /><span>4:00 PM</span></label>
+                      <label class="chip" style="--i:1"><input type="checkbox" name="Wednesday" value="5:00 PM" /><span>5:00 PM</span></label>
+                      <label class="chip" style="--i:2"><input type="checkbox" name="Wednesday" value="6:00 PM" /><span>6:00 PM</span></label>
+                      <label class="chip" style="--i:3"><input type="checkbox" name="Wednesday" value="7:00 PM" /><span>7:00 PM</span></label>
+                      <label class="chip" style="--i:4"><input type="checkbox" name="Wednesday" value="8:00 PM" /><span>8:00 PM</span></label>
+                      <label class="chip" style="--i:5"><input type="checkbox" name="Wednesday" value="9:00 PM" /><span>9:00 PM</span></label>
+                    </div>
+                  </div>
+                </div>
+                <div class="su-day" data-day="thursday">
+                  <label class="su-day-head">
+                    <input type="checkbox" class="day-toggle" />
+                    <span class="su-day-box" aria-hidden="true"></span>
+                    <span class="su-day-name" data-i18n="form.day.thu">Thursday</span>
+                    <span class="su-day-count" aria-hidden="true"></span>
+                    <span class="su-day-hours">4:00 PM – 10:00 PM</span>
+                  </label>
+                  <div class="su-times">
+                    <div class="su-times-inner">
+                      <label class="chip" style="--i:0"><input type="checkbox" name="Thursday" value="4:00 PM" /><span>4:00 PM</span></label>
+                      <label class="chip" style="--i:1"><input type="checkbox" name="Thursday" value="5:00 PM" /><span>5:00 PM</span></label>
+                      <label class="chip" style="--i:2"><input type="checkbox" name="Thursday" value="6:00 PM" /><span>6:00 PM</span></label>
+                      <label class="chip" style="--i:3"><input type="checkbox" name="Thursday" value="7:00 PM" /><span>7:00 PM</span></label>
+                      <label class="chip" style="--i:4"><input type="checkbox" name="Thursday" value="8:00 PM" /><span>8:00 PM</span></label>
+                      <label class="chip" style="--i:5"><input type="checkbox" name="Thursday" value="9:00 PM" /><span>9:00 PM</span></label>
+                    </div>
+                  </div>
+                </div>
+                <div class="su-day" data-day="friday">
+                  <label class="su-day-head">
+                    <input type="checkbox" class="day-toggle" />
+                    <span class="su-day-box" aria-hidden="true"></span>
+                    <span class="su-day-name" data-i18n="form.day.fri">Friday</span>
+                    <span class="su-day-count" aria-hidden="true"></span>
+                    <span class="su-day-hours">4:00 PM – 10:00 PM</span>
+                  </label>
+                  <div class="su-times">
+                    <div class="su-times-inner">
+                      <label class="chip" style="--i:0"><input type="checkbox" name="Friday" value="4:00 PM" /><span>4:00 PM</span></label>
+                      <label class="chip" style="--i:1"><input type="checkbox" name="Friday" value="5:00 PM" /><span>5:00 PM</span></label>
+                      <label class="chip" style="--i:2"><input type="checkbox" name="Friday" value="6:00 PM" /><span>6:00 PM</span></label>
+                      <label class="chip" style="--i:3"><input type="checkbox" name="Friday" value="7:00 PM" /><span>7:00 PM</span></label>
+                      <label class="chip" style="--i:4"><input type="checkbox" name="Friday" value="8:00 PM" /><span>8:00 PM</span></label>
+                      <label class="chip" style="--i:5"><input type="checkbox" name="Friday" value="9:00 PM" /><span>9:00 PM</span></label>
+                    </div>
+                  </div>
+                </div>
+                <div class="su-day" data-day="saturday">
+                  <label class="su-day-head">
+                    <input type="checkbox" class="day-toggle" />
+                    <span class="su-day-box" aria-hidden="true"></span>
+                    <span class="su-day-name" data-i18n="form.day.sat">Saturday</span>
+                    <span class="su-day-count" aria-hidden="true"></span>
+                    <span class="su-day-hours">9:00 AM – 10:00 PM</span>
+                  </label>
+                  <div class="su-times">
+                    <div class="su-times-inner">
+                      <label class="chip" style="--i:0"><input type="checkbox" name="Saturday" value="9:00 AM" /><span>9:00 AM</span></label>
+                      <label class="chip" style="--i:1"><input type="checkbox" name="Saturday" value="10:00 AM" /><span>10:00 AM</span></label>
+                      <label class="chip" style="--i:2"><input type="checkbox" name="Saturday" value="11:00 AM" /><span>11:00 AM</span></label>
+                      <label class="chip" style="--i:3"><input type="checkbox" name="Saturday" value="12:00 PM" /><span>12:00 PM</span></label>
+                      <label class="chip" style="--i:4"><input type="checkbox" name="Saturday" value="1:00 PM" /><span>1:00 PM</span></label>
+                      <label class="chip" style="--i:5"><input type="checkbox" name="Saturday" value="2:00 PM" /><span>2:00 PM</span></label>
+                      <label class="chip" style="--i:6"><input type="checkbox" name="Saturday" value="3:00 PM" /><span>3:00 PM</span></label>
+                      <label class="chip" style="--i:7"><input type="checkbox" name="Saturday" value="4:00 PM" /><span>4:00 PM</span></label>
+                      <label class="chip" style="--i:8"><input type="checkbox" name="Saturday" value="5:00 PM" /><span>5:00 PM</span></label>
+                      <label class="chip" style="--i:9"><input type="checkbox" name="Saturday" value="6:00 PM" /><span>6:00 PM</span></label>
+                      <label class="chip" style="--i:10"><input type="checkbox" name="Saturday" value="7:00 PM" /><span>7:00 PM</span></label>
+                      <label class="chip" style="--i:11"><input type="checkbox" name="Saturday" value="8:00 PM" /><span>8:00 PM</span></label>
+                      <label class="chip" style="--i:12"><input type="checkbox" name="Saturday" value="9:00 PM" /><span>9:00 PM</span></label>
+                    </div>
+                  </div>
+                </div>
+                <div class="su-day" data-day="sunday">
+                  <label class="su-day-head">
+                    <input type="checkbox" class="day-toggle" />
+                    <span class="su-day-box" aria-hidden="true"></span>
+                    <span class="su-day-name" data-i18n="form.day.sun">Sunday</span>
+                    <span class="su-day-count" aria-hidden="true"></span>
+                    <span class="su-day-hours">9:00 AM – 10:00 PM</span>
+                  </label>
+                  <div class="su-times">
+                    <div class="su-times-inner">
+                      <label class="chip" style="--i:0"><input type="checkbox" name="Sunday" value="9:00 AM" /><span>9:00 AM</span></label>
+                      <label class="chip" style="--i:1"><input type="checkbox" name="Sunday" value="10:00 AM" /><span>10:00 AM</span></label>
+                      <label class="chip" style="--i:2"><input type="checkbox" name="Sunday" value="11:00 AM" /><span>11:00 AM</span></label>
+                      <label class="chip" style="--i:3"><input type="checkbox" name="Sunday" value="12:00 PM" /><span>12:00 PM</span></label>
+                      <label class="chip" style="--i:4"><input type="checkbox" name="Sunday" value="1:00 PM" /><span>1:00 PM</span></label>
+                      <label class="chip" style="--i:5"><input type="checkbox" name="Sunday" value="2:00 PM" /><span>2:00 PM</span></label>
+                      <label class="chip" style="--i:6"><input type="checkbox" name="Sunday" value="3:00 PM" /><span>3:00 PM</span></label>
+                      <label class="chip" style="--i:7"><input type="checkbox" name="Sunday" value="4:00 PM" /><span>4:00 PM</span></label>
+                      <label class="chip" style="--i:8"><input type="checkbox" name="Sunday" value="5:00 PM" /><span>5:00 PM</span></label>
+                      <label class="chip" style="--i:9"><input type="checkbox" name="Sunday" value="6:00 PM" /><span>6:00 PM</span></label>
+                      <label class="chip" style="--i:10"><input type="checkbox" name="Sunday" value="7:00 PM" /><span>7:00 PM</span></label>
+                      <label class="chip" style="--i:11"><input type="checkbox" name="Sunday" value="8:00 PM" /><span>8:00 PM</span></label>
+                      <label class="chip" style="--i:12"><input type="checkbox" name="Sunday" value="9:00 PM" /><span>9:00 PM</span></label>
+                    </div>
+                  </div>
+                </div>
+                  </div>
+                </fieldset>
+
+                <fieldset class="su-panel" data-step="3">
+                  <legend class="su-panel-title" data-i18n="su.p4">Almost done — check your details</legend>
+                  <dl class="su-review" id="su-review"></dl>
+                  <div class="su-field su-field-area">
+                    <textarea id="notes" name="notes" rows="3" placeholder=" "></textarea>
+                    <label for="notes" data-i18n="form.notes">Anything else we should know? (optional)</label>
+                    <span class="su-line" aria-hidden="true"></span>
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-large su-submit">
+                    <span class="su-submit-text" data-i18n="form.submit">Submit Signup</span>
+                    <span class="su-spinner" aria-hidden="true"></span>
+                  </button>
+                  <p class="form-foot" data-i18n="form.foot">By submitting, you consent to be contacted at the email or phone number provided.</p>
+                </fieldset>
+              </div>
+
+              <div class="su-nav">
+                <button type="button" class="su-prev" data-i18n="su.back">← Back</button>
+                <span class="su-stepof" aria-live="polite"></span>
+                <button type="button" class="btn btn-primary su-next" data-i18n="su.next">Next →</button>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -388,7 +516,8 @@
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
-  <script src="script.js" defer></script>
-  <script src="animations.js" defer></script>
+  <script src="script.js?v=3" defer></script>
+  <script src="animations.js?v=3" defer></script>
+  <script src="signup.js?v=3" defer></script>
 </body>
 </html>
