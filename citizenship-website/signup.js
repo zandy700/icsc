@@ -363,29 +363,27 @@
   }
 
   if (!reduced && window.matchMedia("(hover:hover) and (pointer:fine)").matches) {
-    var tilt = $(".su-tilt"), pending = null;
+    // Write transforms straight onto the two moving layers. (Setting CSS
+    // variables on the section re-styled every element inside it per frame.)
+    var tilt = $(".su-tilt"), glowEl = $(".su-glow", section), pending = null;
+    var px = 0, py = 0, gx = 0, gy = 0;
     section.addEventListener("pointermove", function (ev) {
+      px = ev.clientX; py = ev.clientY;
       if (pending) return;
-      var x = ev.clientX, y = ev.clientY;
       pending = requestAnimationFrame(function () {
         pending = null;
         var sr = section.getBoundingClientRect();
-        section.style.setProperty("--gx", x - sr.left + "px");
-        section.style.setProperty("--gy", y - sr.top + "px");
+        gx = px - sr.left; gy = py - sr.top;
+        glowEl.style.transform = "translate3d(" + (gx - 340) + "px," + (gy - 340) + "px,0)";
 
         var r = stage.getBoundingClientRect();
-        var px = Math.max(-1, Math.min(1, (x - (r.left + r.width / 2)) / (window.innerWidth / 2)));
-        var py = Math.max(-1, Math.min(1, (y - (r.top + r.height / 2)) / (window.innerHeight / 2)));
-        tilt.style.setProperty("--ry", (-16 + px * 26).toFixed(2) + "deg");
-        tilt.style.setProperty("--rx", (9 - py * 16).toFixed(2) + "deg");
-        card.style.setProperty("--mx", (50 + px * 45).toFixed(1) + "%");
-        card.style.setProperty("--my", (40 + py * 40).toFixed(1) + "%");
+        if (!r.width) return;                     // card hidden on small screens
+        var nx = Math.max(-1, Math.min(1, (px - (r.left + r.width / 2)) / (window.innerWidth / 2)));
+        var ny = Math.max(-1, Math.min(1, (py - (r.top + r.height / 2)) / (window.innerHeight / 2)));
+        tilt.style.transform = "rotateX(" + (9 - ny * 16).toFixed(2) + "deg) rotateY(" + (-16 + nx * 26).toFixed(2) + "deg)";
       });
     });
-    section.addEventListener("pointerleave", function () {
-      tilt.style.removeProperty("--ry");
-      tilt.style.removeProperty("--rx");
-    });
+    section.addEventListener("pointerleave", function () { tilt.style.transform = ""; });
   }
 
   /* ---------- language switch ---------- */

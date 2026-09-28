@@ -382,18 +382,17 @@ body {
   background-size: 340px 340px;
   opacity: 0.32;
   background-position: 90px 60px;
-  will-change: opacity;
-  animation: suTwinkle 3.6s ease-in-out infinite alternate;
+  opacity: 0.28;
 }
-@keyframes suTwinkle { from { opacity: 0.12; } to { opacity: 0.42; } }
 .su-glow {
   position: absolute;
   left: 0; top: 0;
   width: 680px; height: 680px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(245,197,66,0.2) 0%, rgba(245,197,66,0.06) 38%, transparent 66%);
-  transform: translate3d(calc(var(--gx, 72vw) - 340px), calc(var(--gy, 260px) - 340px), 0);
+  transform: translate3d(calc(72vw - 340px), -80px, 0);
   transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: transform;
 }
 
 /* heading */
@@ -461,7 +460,7 @@ body {
 }
 .su-tilt {
   transform-style: preserve-3d;
-  transform: rotateX(var(--rx, 9deg)) rotateY(var(--ry, -16deg));
+  transform: rotateX(9deg) rotateY(-16deg);
   transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .su-card {
@@ -572,10 +571,10 @@ body {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at var(--mx, 25%) var(--my, 15%), rgba(255,255,255,0.42) 0%, rgba(255,255,255,0) 45%),
+    radial-gradient(circle at 25% 15%, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0) 45%),
     linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.14) 45%, transparent 60%);
 }
-.su-back .su-sheen { background: radial-gradient(circle at var(--mx, 25%) var(--my, 15%), rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 45%); }
+.su-back .su-sheen { background: radial-gradient(circle at 25% 15%, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 45%); }
 
 /* back of the card: this week's picks as bars */
 .su-week {
@@ -633,7 +632,7 @@ body {
   font-weight: 600;
   transition: background 0.25s, transform 0.25s;
 }
-.su-perks li:hover { background: rgba(255,255,255,0.1); transform: translateX(4px); }
+.su-perks li:hover { background: rgba(255,255,255,0.1); }
 .su-perk-ico {
   display: grid; place-items: center;
   width: 28px; height: 28px; flex: none;
@@ -646,26 +645,11 @@ body {
 /* ---------- right: the form card ---------- */
 .su-form-wrap {
   position: relative;
-  isolation: isolate;
-  overflow: hidden;
   padding: 2px;
   border-radius: 26px;
-  background: rgba(255,255,255,0.08);
+  background: linear-gradient(145deg, rgba(255,221,107,0.95) 0%, rgba(255,255,255,0.1) 30%, rgba(255,255,255,0.1) 65%, rgba(245,197,66,0.9) 100%);
   box-shadow: 0 40px 90px -30px rgba(2,8,26,0.8);
 }
-.su-form-wrap::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  left: 50%; top: 50%;
-  width: 260%;
-  aspect-ratio: 1;
-  background: conic-gradient(rgba(245,197,66,0.95), rgba(255,255,255,0.06) 22%, rgba(255,255,255,0.06) 50%, rgba(255,221,107,0.9) 72%, rgba(255,255,255,0.06) 90%, rgba(245,197,66,0.95));
-  transform: translate(-50%, -50%) rotate(0deg);
-  will-change: transform;
-  animation: suBorderSpin 9s linear infinite;
-}
-@keyframes suBorderSpin { to { transform: translate(-50%, -50%) rotate(360deg); } }
 .su-form {
   position: relative;
   border-radius: 24px;
@@ -883,9 +867,9 @@ body {
   border: 1.5px solid var(--border);
   border-radius: 15px;
   background: #fbf7ea;
-  transition: border-color 0.25s, background 0.25s, box-shadow 0.3s, transform 0.25s;
+  transition: border-color 0.2s, background 0.2s;
 }
-.su-day:hover { transform: translateY(-1px); box-shadow: 0 10px 22px -16px rgba(20,48,106,0.55); }
+.su-day:hover { border-color: #d6c485; }
 .su-day.is-open { border-color: var(--navy); background: #fff; box-shadow: 0 16px 32px -20px rgba(20,48,106,0.6); }
 .su-day-head {
   position: relative;
@@ -935,23 +919,9 @@ body {
 }
 .su-day.has-picks .su-day-count { display: inline-grid; animation: suPop 0.35s cubic-bezier(0.3, 1.6, 0.5, 1); }
 .su-day-hours { color: var(--ink-2); font-size: 0.8rem; font-weight: 500; white-space: nowrap; }
-.su-times { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.45s cubic-bezier(0.2, 0.7, 0.2, 1); }
-.su-day.is-open .su-times, .su-form:not(.is-wizard) .su-times { grid-template-rows: 1fr; }
-.su-times-inner {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  min-height: 0;
-  overflow: hidden;
-  padding: 0 16px;
-  visibility: hidden;
-  transition: visibility 0s linear 0.45s, padding 0.45s;
-}
-.su-day.is-open .su-times-inner, .su-form:not(.is-wizard) .su-times-inner {
-  padding: 4px 16px 16px;
-  visibility: visible;
-  transition: visibility 0s, padding 0.45s;
-}
+.su-times { display: none; }
+.su-day.is-open .su-times, .su-form:not(.is-wizard) .su-times { display: block; }
+.su-times-inner { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 16px 16px; }
 .chip { position: relative; margin: 0; }
 .chip input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
 .chip span {
@@ -966,18 +936,17 @@ body {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.25s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
-.chip span:hover { border-color: var(--navy); color: var(--navy); transform: translateY(-2px); }
+.chip span:hover { border-color: var(--navy); color: var(--navy); }
 .chip input:checked + span {
   background: var(--navy);
   border-color: var(--navy);
   color: #fff;
-  box-shadow: 0 8px 16px -8px rgba(20,48,106,0.75);
-  animation: suPop 0.35s cubic-bezier(0.3, 1.6, 0.5, 1);
+  animation: suPop 0.3s cubic-bezier(0.3, 1.6, 0.5, 1);
 }
 .chip input:focus-visible + span { outline: 2px solid var(--navy); outline-offset: 2px; }
-.su-day.is-open .chip { animation: suChipIn 0.45s cubic-bezier(0.3, 1.5, 0.5, 1) both; animation-delay: calc(var(--i, 0) * 28ms + 90ms); }
+.su-day.is-open .chip { animation: suChipIn 0.35s cubic-bezier(0.3, 1.5, 0.5, 1) both; animation-delay: calc(var(--i, 0) * 18ms); }
 @keyframes suChipIn { from { opacity: 0; transform: translateY(12px) scale(0.8); } }
 
 /* review */
@@ -1108,7 +1077,7 @@ body {
   .su-day-head { padding: 12px 13px; gap: 10px; }
   .su-day-hours { font-size: 0.72rem; }
   .su-times-inner { gap: 7px; }
-  .su-day.is-open .su-times-inner { padding: 4px 13px 14px; }
+  .su-times-inner { padding: 4px 13px 14px; }
   .chip span { padding: 7px 12px; font-size: 0.84rem; }
   .su-rv-row { grid-template-columns: minmax(0, 1fr) auto; }
   .su-review dt { grid-column: 1 / -1; }
