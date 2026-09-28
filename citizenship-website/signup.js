@@ -363,19 +363,15 @@
   }
 
   if (!reduced && window.matchMedia("(hover:hover) and (pointer:fine)").matches) {
-    // Write transforms straight onto the two moving layers. (Setting CSS
-    // variables on the section re-styled every element inside it per frame.)
-    var tilt = $(".su-tilt"), glowEl = $(".su-glow", section), pending = null;
-    var px = 0, py = 0, gx = 0, gy = 0;
+    // Tilt the card by writing its transform directly (no CSS variables on
+    // ancestors, no always-on layers elsewhere in the section).
+    var tilt = $(".su-tilt"), pending = null;
+    var px = 0, py = 0;
     section.addEventListener("pointermove", function (ev) {
       px = ev.clientX; py = ev.clientY;
       if (pending) return;
       pending = requestAnimationFrame(function () {
         pending = null;
-        var sr = section.getBoundingClientRect();
-        gx = px - sr.left; gy = py - sr.top;
-        glowEl.style.transform = "translate3d(" + (gx - 340) + "px," + (gy - 340) + "px,0)";
-
         var r = stage.getBoundingClientRect();
         if (!r.width) return;                     // card hidden on small screens
         var nx = Math.max(-1, Math.min(1, (px - (r.left + r.width / 2)) / (window.innerWidth / 2)));
