@@ -279,12 +279,14 @@
 })();
 
 /* =============================================================
-   3D White House fly-in (replaces the flat video scrub)
-   Camera dollies from far outside, between the columns, through
-   the front door, into a warm interior as you scroll. Falls back
-   to a static poster image when WebGL/desktop/motion isn't available.
+   3D flag journey (pinned scroll section)
+   A cloth-simulated American flag in a night sky. As you scroll the
+   sky warms toward dawn, the camera sweeps around the rippling flag,
+   and drifting gold stardust gathers into a giant star that frames
+   it for the final "Sign up" beat. Falls back to a static poster
+   when WebGL / desktop / motion isn't available.
    ============================================================= */
-(function whiteHouseScrub() {
+(function flagJourney() {
   "use strict";
   var THREE = window.THREE;
   var section = document.getElementById("scrub");
@@ -310,12 +312,13 @@
     for (var i = 0; i < N; i++) {
       var o = beatOpacity(i, p);
       beats[i].style.opacity = o.toFixed(3);
-      beats[i].style.transform = "translate(-50%, calc(-50% + " + ((1 - o) * 18).toFixed(1) + "px))";
+      beats[i].style.setProperty("--beat-y", ((1 - o) * 18).toFixed(1) + "px");
     }
     var last = beatOpacity(N - 1, p);
     if (cta) { cta.style.opacity = last.toFixed(3); cta.classList.toggle("is-on", last > 0.6); }
     if (bar) bar.style.width = (p * 100).toFixed(2) + "%";
     if (hint) hint.style.opacity = p > 0.03 ? "0" : "1";
+    sticky.style.setProperty("--dawn", p.toFixed(3));
   }
   function computeProgress() {
     var rect = section.getBoundingClientRect();
@@ -335,143 +338,167 @@
   if (!THREE || !canGL || !desktop.matches || reduced.matches) return;
 
   var renderer;
-  try { renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true }); }
+  try { renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true }); }
   catch (e) { return; }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setClearColor(0x000000, 0);
 
   section.classList.add("is-live");
 
-  var SKY = 0xbfe0f5;
   var scene = new THREE.Scene();
-  scene.background = new THREE.Color(SKY);
-  scene.fog = new THREE.Fog(SKY, 16, 48);
+  var camera = new THREE.PerspectiveCamera(42, 1, 0.1, 200);
 
-  var camera = new THREE.PerspectiveCamera(55, 1, 0.1, 220);
+  scene.add(new THREE.AmbientLight(0x9fb3ff, 0.42));
+  var key = new THREE.DirectionalLight(0xfff0d6, 1.15); key.position.set(6, 5, 9); scene.add(key);
+  var rim = new THREE.DirectionalLight(0x7fa6ff, 0.7); rim.position.set(-8, 3, -6); scene.add(rim);
+  var glow = new THREE.PointLight(0xffc766, 0, 30); glow.position.set(3, 1, 4); scene.add(glow);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.62));
-  var sun = new THREE.DirectionalLight(0xfff1d6, 1.05); sun.position.set(-8, 13, 10); scene.add(sun);
-  var warm = new THREE.PointLight(0xffd39a, 1.3, 22); warm.position.set(0, 2, -3.5); scene.add(warm);
-
-  var wallMat  = new THREE.MeshStandardMaterial({ color: 0xf4f2ea, roughness: 0.92 });
-  var roofMat  = new THREE.MeshStandardMaterial({ color: 0xd9d6cc, roughness: 0.9 });
-  var winMat   = new THREE.MeshStandardMaterial({ color: 0x24304d, roughness: 0.35, metalness: 0.25 });
-  var goldMat  = new THREE.MeshStandardMaterial({ color: 0xf5c542, metalness: 0.4, roughness: 0.35 });
-  var lawnMat  = new THREE.MeshStandardMaterial({ color: 0x6ea24a, roughness: 1 });
-  var floorMat = new THREE.MeshStandardMaterial({ color: 0x8a5a34, roughness: 0.85, side: THREE.DoubleSide });
-  var trimMat  = new THREE.MeshStandardMaterial({ color: 0x2b3550, roughness: 0.5 });
-  // interior surfaces are double-sided so the room encloses the camera when it flies in
-  var inMat    = new THREE.MeshStandardMaterial({ color: 0xece3d2, roughness: 0.9, side: THREE.DoubleSide });
-
-  var house = new THREE.Group(); scene.add(house);
-  function box(w, h, d, mat, x, y, z) {
-    var m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
-    m.position.set(x, y, z); house.add(m); return m;
+  /* ---- flag texture: 13 stripes, 50-star canton ---- */
+  function flagTexture() {
+    var W = 1520, H = 800, c = document.createElement("canvas");
+    c.width = W; c.height = H;
+    var g = c.getContext("2d"), sh = H / 13;
+    for (var i = 0; i < 13; i++) { g.fillStyle = i % 2 ? "#ffffff" : "#b22234"; g.fillRect(0, i * sh, W, sh + 1); }
+    var cw = W * 0.4, ch = sh * 7;
+    g.fillStyle = "#3c3b6e"; g.fillRect(0, 0, cw, ch);
+    g.fillStyle = "#ffffff";
+    function star(cx, cy, r) {
+      g.beginPath();
+      for (var k = 0; k < 10; k++) {
+        var rr = k % 2 ? r * 0.38 : r, a = k * Math.PI / 5 - Math.PI / 2;
+        g[k ? "lineTo" : "moveTo"](cx + Math.cos(a) * rr, cy + Math.sin(a) * rr);
+      }
+      g.closePath(); g.fill();
+    }
+    var dx = cw / 12, dy = ch / 10;
+    for (var row = 0; row < 9; row++) {
+      var six = row % 2 === 0;
+      for (var col = 0; col < (six ? 6 : 5); col++) {
+        star(dx * (six ? 1 + col * 2 : 2 + col * 2), dy * (row + 1), dy * 0.4);
+      }
+    }
+    // subtle fabric weave
+    g.globalAlpha = 0.05; g.fillStyle = "#000";
+    for (var y = 0; y < H; y += 4) g.fillRect(0, y, W, 1);
+    g.globalAlpha = 1;
+    var t = new THREE.CanvasTexture(c);
+    t.anisotropy = renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 1;
+    return t;
   }
 
-  // lawn
-  var lawn = new THREE.Mesh(new THREE.PlaneGeometry(300, 300), lawnMat);
-  lawn.rotation.x = -Math.PI / 2; scene.add(lawn);
+  var FW = 6, FH = 3.16, SX = 60, SY = 30;
+  var flagGeo = new THREE.PlaneGeometry(FW, FH, SX, SY);
+  flagGeo.translate(FW / 2, 0, 0);               // hoist edge sits on the pole (x = 0)
+  var pos = flagGeo.attributes.position;
+  var base = new Float32Array(pos.array);
+  var flag = new THREE.Mesh(flagGeo, new THREE.MeshStandardMaterial({
+    map: flagTexture(), side: THREE.DoubleSide, roughness: 0.78, metalness: 0.02
+  }));
+  var rig = new THREE.Group(); scene.add(rig);
+  flag.position.set(0, 1.9, 0); rig.add(flag);
 
-  // interior room (behind the front face, z < 0) — double-sided so it encloses the camera
-  box(10, 3.4, 0.2, inMat, 0, 1.7, -6);       // back wall
-  var floor = new THREE.Mesh(new THREE.PlaneGeometry(10, 6), floorMat);
-  floor.rotation.x = -Math.PI / 2; floor.position.set(0, 0.02, -3); scene.add(floor);
-  box(0.2, 3.4, 6, inMat, -5, 1.7, -3);       // left inner wall
-  box(0.2, 3.4, 6, inMat, 5, 1.7, -3);        // right inner wall
-  box(10, 0.2, 6, inMat, 0, 3.4, -3);          // ceiling
+  var poleMat = new THREE.MeshStandardMaterial({ color: 0xdfe3ea, metalness: 0.75, roughness: 0.28 });
+  var goldMat = new THREE.MeshStandardMaterial({ color: 0xf5c542, metalness: 0.85, roughness: 0.25, emissive: 0x3a2600 });
+  var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.075, 12, 20), poleMat);
+  pole.position.set(-0.06, -2.4, 0); rig.add(pole);
+  var finial = new THREE.Mesh(new THREE.SphereGeometry(0.17, 24, 16), goldMat);
+  finial.position.set(-0.06, 3.72, 0); rig.add(finial);
 
-  // gold star emblem on interior back wall
-  (function () {
-    var s = new THREE.Shape(), pts = 5, step = Math.PI / pts;
-    for (var i = 0; i < 2 * pts; i++) {
-      var r = i % 2 ? 0.22 : 0.5, a = i * step - Math.PI / 2;
-      var x = Math.cos(a) * r, y = Math.sin(a) * r;
-      if (i) s.lineTo(x, y); else s.moveTo(x, y);
+  function waveFlag(t, wind) {
+    var a = base, arr = pos.array;
+    for (var i = 0; i < arr.length; i += 3) {
+      var x = a[i], y = a[i + 1], u = x / FW;        // 0 at the pole, 1 at the fly end
+      var amp = (0.12 + 0.5 * wind) * u;
+      var z = amp * Math.sin(x * 1.25 - t * (2.3 + wind * 1.6) + y * 0.35)
+            + amp * 0.35 * Math.sin(x * 2.9 - t * 3.7 + y * 1.1);
+      arr[i] = x - u * u * 0.18 * (1 - wind);          // slight slack when the wind is low
+      arr[i + 1] = y - u * u * 0.3 * (1 - wind) + amp * 0.12 * Math.sin(x * 2 - t * 2.1);
+      arr[i + 2] = z;
     }
-    s.closePath();
-    var em = new THREE.Mesh(new THREE.ExtrudeGeometry(s, { depth: 0.08, bevelEnabled: false }), goldMat);
-    em.position.set(0, 1.95, -5.85); house.add(em);
-  })();
-
-  // front face in pieces, leaving a central doorway gap (x -1.15..1.15, y 0..2.2)
-  box(3.8, 3.4, 0.3, wallMat, -3.05, 1.7, 0);
-  box(3.8, 3.4, 0.3, wallMat,  3.05, 1.7, 0);
-  box(2.3, 1.2, 0.3, wallMat,  0, 2.8, 0);     // lintel above door
-  box(0.16, 2.2, 0.34, trimMat, -1.2, 1.1, 0); // left jamb
-  box(0.16, 2.2, 0.34, trimMat,  1.2, 1.1, 0); // right jamb
-
-  // side wings
-  box(4, 2.2, 3, wallMat, -7.2, 1.1, -1.5);
-  box(4, 2.2, 3, wallMat,  7.2, 1.1, -1.5);
-  box(4.2, 0.25, 3.2, roofMat, -7.2, 2.32, -1.5);
-  box(4.2, 0.25, 3.2, roofMat,  7.2, 2.32, -1.5);
-
-  // main roof
-  box(10.2, 0.3, 6.2, roofMat, 0, 3.55, -3);
-
-  // portico columns (front, z = 1.4); center gap aligns with the door
-  [-4, -2.4, -1.4, 1.4, 2.4, 4].forEach(function (x) {
-    var c = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 3.0, 16), wallMat);
-    c.position.set(x, 1.5, 1.4); house.add(c);
-    box(0.72, 0.18, 0.72, wallMat, x, 3.05, 1.4); // capital
-    box(0.72, 0.18, 0.72, wallMat, x, 0.05, 1.4); // base
-  });
-  box(9.2, 0.5, 0.9, wallMat, 0, 3.35, 1.4);       // entablature
-
-  // pediment (triangle)
-  (function () {
-    var t = new THREE.Shape();
-    t.moveTo(-4.6, 0); t.lineTo(4.6, 0); t.lineTo(0, 1.6); t.closePath();
-    var ped = new THREE.Mesh(new THREE.ExtrudeGeometry(t, { depth: 0.9, bevelEnabled: false }), wallMat);
-    ped.position.set(0, 3.6, 0.95); house.add(ped);
-  })();
-
-  box(9.5, 0.3, 2.4, roofMat, 0, -0.05, 2.0);      // steps / base platform
-
-  // facade windows
-  [-3.05, 3.05].forEach(function (px) {
-    for (var r = 0; r < 2; r++) for (var c = 0; c < 3; c++) {
-      box(0.55, 0.9, 0.08, winMat, px + (c - 1) * 1.0, 1.0 + r * 1.35, 0.17);
-    }
-  });
-  [-7.2, 7.2].forEach(function (px) {
-    for (var c = 0; c < 3; c++) box(0.5, 0.8, 0.08, winMat, px + (c - 1) * 1.0, 1.2, 0.03);
-  });
-
-  // flag
-  var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2.4, 8),
-    new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.6, roughness: 0.3 }));
-  pole.position.set(0, 4.95, -3); house.add(pole);
-  var flag = box(0.95, 0.55, 0.03, new THREE.MeshStandardMaterial({ color: 0xb22234, roughness: 0.75 }), 0.5, 5.7, -3);
-
-  // trees for parallax depth
-  function tree(x, z) {
-    var trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.17, 1.3, 8),
-      new THREE.MeshStandardMaterial({ color: 0x6b4a2b, roughness: 1 }));
-    trunk.position.set(x, 0.65, z); scene.add(trunk);
-    var leaves = new THREE.Mesh(new THREE.SphereGeometry(1.0, 12, 10),
-      new THREE.MeshStandardMaterial({ color: 0x3f7d3a, roughness: 1 }));
-    leaves.position.set(x, 1.9, z); scene.add(leaves);
+    pos.needsUpdate = true;
+    flagGeo.computeVertexNormals();
   }
-  tree(-10.5, 3); tree(-12.5, 6.5); tree(10.5, 3); tree(12.5, 6.5);
 
+  /* ---- gold stardust that gathers into a star ---- */
+  var COUNT = 1600;
+  var from = new Float32Array(COUNT * 3), to = new Float32Array(COUNT * 3), phase = new Float32Array(COUNT);
+  var starPts = [];
+  for (var k = 0; k < 10; k++) {
+    var rr = k % 2 ? 2.7 : 6.8, ang = k * Math.PI / 5 + Math.PI / 2;
+    starPts.push([Math.cos(ang) * rr, Math.sin(ang) * rr]);
+  }
+  for (var n = 0; n < COUNT; n++) {
+    from[n * 3] = (Math.random() - 0.5) * 34;
+    from[n * 3 + 1] = (Math.random() - 0.5) * 20 + 1;
+    from[n * 3 + 2] = -14 + Math.random() * 20;
+    var seg = n % 10, f = Math.random(), A = starPts[seg], B = starPts[(seg + 1) % 10];
+    var jitter = (Math.random() - 0.5) * 0.18;
+    to[n * 3] = 3 + A[0] + (B[0] - A[0]) * f + jitter;
+    to[n * 3 + 1] = 1.9 + A[1] + (B[1] - A[1]) * f + jitter;
+    to[n * 3 + 2] = -3.2 + (Math.random() - 0.5) * 0.4;
+    phase[n] = Math.random() * Math.PI * 2;
+  }
+  var dustGeo = new THREE.BufferGeometry();
+  var dustPos = new Float32Array(from);
+  dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
+  var dot = (function () {
+    var c = document.createElement("canvas"); c.width = c.height = 64;
+    var g = c.getContext("2d"), gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gr.addColorStop(0, "rgba(255,255,255,1)"); gr.addColorStop(0.25, "rgba(255,226,140,0.9)");
+    gr.addColorStop(1, "rgba(255,200,80,0)");
+    g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+    return new THREE.CanvasTexture(c);
+  })();
+  var dustMat = new THREE.PointsMaterial({
+    size: 0.2, map: dot, color: 0xffd76a, transparent: true, opacity: 0.85,
+    depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true
+  });
+  scene.add(new THREE.Points(dustGeo, dustMat));
+
+  /* ---- scroll choreography ---- */
   function lerp(a, b, t) { return a + (b - a) * t; }
-  function ease(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
-  var tmpLook = new THREE.Vector3();
-  var pointerX = 0;
-  window.addEventListener("mousemove", function (e) { pointerX = (e.clientX / window.innerWidth - 0.5); }, { passive: true });
+  function smooth(e0, e1, x) { var t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0))); return t * t * (3 - 2 * t); }
+  // camera keyframes: [p, x, y, z, lookX, lookY]
+  var KEYS = [
+    [0.00, -3.5, 0.2, 13.5, 3.0, 2.9],   // low, wide: flag high against the night
+    [0.45, 9.5, 2.6, 7.5, 3.4, 2.3],     // swing round the fly end: cloth in full 3D
+    [0.72, 4.5, 3.4, 9.5, 2.8, 2.6],     // over the top
+    [1.00, 3.0, 0.9, 17.5, 3.0, 2.4]     // pull back: flag framed by the golden star
+  ];
+  var look = new THREE.Vector3(), pointer = { x: 0, y: 0 }, sp = { x: 0, y: 0 };
+  window.addEventListener("mousemove", function (e) {
+    pointer.x = e.clientX / window.innerWidth - 0.5;
+    pointer.y = e.clientY / window.innerHeight - 0.5;
+  }, { passive: true });
 
-  function updateCamera(p) {
-    var e = ease(p);
-    var camZ = lerp(24, -0.4, e);     // ends right at the doorway, peering into the warm interior
-    var camY = lerp(2.7, 1.35, e);
-    var lookZ = lerp(0, -6, e);
-    var lookY = lerp(2.0, 1.2, e);
-    var px = pointerX * lerp(1.3, 0.12, e);
-    camera.position.set(px, camY, camZ);
-    tmpLook.set(px * 0.3, lookY, lookZ);
-    camera.lookAt(tmpLook);
-    flag.rotation.y = Math.sin(performance.now() * 0.003) * 0.25;
+  function cameraAt(p) {
+    var i = 0;
+    while (i < KEYS.length - 2 && p > KEYS[i + 1][0]) i++;
+    var A = KEYS[i], B = KEYS[i + 1], t = smooth(A[0], B[0], p);
+    sp.x += (pointer.x - sp.x) * 0.06; sp.y += (pointer.y - sp.y) * 0.06;
+    camera.position.set(lerp(A[1], B[1], t) + sp.x * 1.4, lerp(A[2], B[2], t) - sp.y * 0.8, lerp(A[3], B[3], t));
+    look.set(lerp(A[4], B[4], t), lerp(A[5], B[5], t), 0);
+    camera.lookAt(look);
+  }
+
+  function frame(p, now) {
+    var t = now * 0.001;
+    var wind = 0.35 + 0.65 * smooth(0.05, 0.5, p) - 0.2 * smooth(0.8, 1, p);
+    waveFlag(t, wind);
+    cameraAt(p);
+
+    var gather = smooth(0.58, 0.95, p);
+    for (var n = 0; n < COUNT; n++) {
+      var j = n * 3, drift = 0.25 * (1 - gather);
+      dustPos[j]     = lerp(from[j], to[j], gather) + Math.sin(t * 0.4 + phase[n]) * drift;
+      dustPos[j + 1] = lerp(from[j + 1], to[j + 1], gather) + Math.cos(t * 0.33 + phase[n]) * drift;
+      dustPos[j + 2] = lerp(from[j + 2], to[j + 2], gather);
+    }
+    dustGeo.attributes.position.needsUpdate = true;
+    dustMat.size = lerp(0.2, 0.26, gather) * (0.9 + 0.1 * Math.sin(t * 3));
+    glow.intensity = 1.6 * gather;
+    key.color.setRGB(1, lerp(0.94, 0.86, p), lerp(0.84, 0.66, p));   // warmer as dawn breaks
+    renderer.render(scene, camera);
   }
 
   function resize() {
@@ -479,25 +506,28 @@
     var h = sticky.clientHeight || window.innerHeight;
     if (!w || !h) return;
     renderer.setSize(w, h, false);
-    camera.aspect = w / h; camera.updateProjectionMatrix();
+    camera.aspect = w / h;
+    // wide screens: captions sit on the left, so frame the flag in the right half
+    if (w >= 1000) camera.setViewOffset(w, h, -w * 0.2, 0, w, h); else camera.clearViewOffset();
+    camera.updateProjectionMatrix();
   }
   resize();
   window.addEventListener("resize", resize);
 
   var visible = true, running = false;
-  function start() { if (running) return; running = true; loop(); }
-  function loop() {
+  function start() { if (running) return; running = true; requestAnimationFrame(loop); }
+  function loop(now) {
     if (!visible) { running = false; return; }
     var p = computeProgress();
-    updateCamera(p);
+    frame(p, now);
     paintCaptions(p);
-    renderer.render(scene, camera);
     requestAnimationFrame(loop);
   }
   if ("IntersectionObserver" in window) {
     new IntersectionObserver(function (en) { visible = en[0].isIntersecting; if (visible) start(); },
       { threshold: 0.001 }).observe(section);
   }
-  updateCamera(0);
+  frame(0, performance.now());
+  paintCaptions(0);
   start();
 })();

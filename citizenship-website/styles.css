@@ -116,7 +116,7 @@ body {
 .site-footer p { margin: 0; }
 
 /* ============================================================
-   CINEMATIC SCROLL-SCRUB SECTION (White House push-in)
+   CINEMATIC SCROLL SECTION (3D flag journey)
    ============================================================ */
 
 /* Base (also the mobile / reduced-motion / no-JS static layout) */
@@ -229,6 +229,18 @@ body {
   min-height: 100vh;
 }
 .scrub.is-live .scrub-canvas { will-change: transform; }
+/* night sky that warms toward dawn as you scroll (--dawn: 0 → 1, set by JS) */
+.scrub.is-live .scrub-sticky {
+  background:
+    radial-gradient(130% 70% at 50% 118%, rgba(255,176,84,calc(var(--dawn, 0) * 0.75)) 0%, rgba(255,120,90,calc(var(--dawn, 0) * 0.25)) 35%, transparent 70%),
+    radial-gradient(80% 60% at 18% 12%, rgba(90,120,220,0.35) 0%, transparent 60%),
+    linear-gradient(180deg, #050d26 0%, #0b1d4a 55%, #173771 100%);
+}
+.scrub.is-live .scrub-scrim {
+  background:
+    radial-gradient(70% 45% at 50% 50%, rgba(3,9,28,0.5) 0%, rgba(3,9,28,0) 70%),
+    linear-gradient(180deg, rgba(3,9,28,0.35) 0%, rgba(3,9,28,0) 30%, rgba(3,9,28,0) 75%, rgba(3,9,28,0.45) 100%);
+}
 .scrub.is-live .scrub-captions {
   position: absolute;
   left: 50%;
@@ -240,7 +252,7 @@ body {
   position: absolute;
   left: 50%;
   top: 0;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, calc(-50% + var(--beat-y, 0px)));
   width: min(90vw, 940px);
   opacity: 0;
   will-change: opacity, transform;
@@ -1126,3 +1138,24 @@ body {
   .ty-card, .ty-card > *, .ty-check circle { animation: none !important; }
   .ty-check path { animation: none; stroke-dashoffset: 0; }
 }
+
+/* wide screens: cinematic split — captions left, 3D flag right */
+@media (min-width: 1000px) {
+  .scrub.is-live .scrub-captions { inset: 0; left: 0; top: 0; transform: none; max-width: none; padding: 0; }
+  .scrub.is-live .scrub-beat {
+    left: clamp(32px, 6vw, 120px);
+    top: 50%;
+    width: min(42vw, 640px);
+    text-align: left;
+    font-size: clamp(2.3rem, 3.9vw, 3.8rem);
+    transform: translateY(calc(-50% + var(--beat-y, 0px)));
+  }
+  .scrub.is-live .scrub-cta { left: clamp(32px, 6vw, 120px); top: calc(50% + clamp(110px, 15vh, 160px)); transform: none; }
+  .scrub.is-live .scrub-scrim {
+    background:
+      linear-gradient(90deg, rgba(3,9,28,0.62) 0%, rgba(3,9,28,0.3) 38%, rgba(3,9,28,0) 60%),
+      linear-gradient(180deg, rgba(3,9,28,0.3) 0%, rgba(3,9,28,0) 28%, rgba(3,9,28,0) 78%, rgba(3,9,28,0.4) 100%);
+  }
+}
+.scrub .scrub-cta.btn-primary { background: var(--yellow); color: var(--navy); }
+.scrub .scrub-cta.btn-primary:hover { background: var(--yellow-2); }
