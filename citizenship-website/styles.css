@@ -203,6 +203,7 @@ body {
   transform: scaleX(0);
   transform-origin: left;
   will-change: transform;
+  transition: opacity 0.3s ease;
 }
 .scrub-hint {
   position: absolute;
@@ -1144,3 +1145,55 @@ body {
 
 /* pause the signup section's ambient loops while it's off screen */
 .signup.is-offscreen *, .signup.is-offscreen *::before, .signup.is-offscreen *::after { animation-play-state: paused !important; }
+
+/* ============================================================
+   SKY BANDS — sunset from the cream hero into the night-sky flag
+   section, and sunrise back into the cream page after it. Each band
+   overlaps the flag section by 90px and fades to transparent there,
+   so there is no seam.
+   ============================================================ */
+.sky-band { position: relative; z-index: 3; height: clamp(240px, 36vh, 400px); pointer-events: none; }
+.sky-dusk {
+  margin: -1px 0 -90px;
+  /* colour stops live in the top (100% - 90px); the last 90px fades out over the flag section */
+  background: linear-gradient(180deg,
+    #fbecbf 0%, #f9dfae calc((100% - 90px) * 0.12), #f4c797 calc((100% - 90px) * 0.25), #e8a58a calc((100% - 90px) * 0.38), #c98189 calc((100% - 90px) * 0.5),
+    #93668d calc((100% - 90px) * 0.62), #5a4e87 calc((100% - 90px) * 0.74), #2b3570 calc((100% - 90px) * 0.86), #13245a calc((100% - 90px) * 1),
+    rgba(12,26,70,0.6) calc(100% - 45px), rgba(8,18,50,0) 100%);
+}
+.sky-dawn {
+  margin: -90px 0 -1px;
+  /* first 90px fades in over the flag section, then sunrise */
+  background: linear-gradient(180deg,
+    rgba(23,40,95,0) 0%, rgba(30,42,98,0.85) 45px, #2f3b78 90px,
+    #5d4d86 calc(90px + (100% - 90px) * 0.14), #9c6788 calc(90px + (100% - 90px) * 0.3), #d28a82 calc(90px + (100% - 90px) * 0.46),
+    #efae88 calc(90px + (100% - 90px) * 0.62), #f7cc9c calc(90px + (100% - 90px) * 0.76), #fbe4b6 calc(90px + (100% - 90px) * 0.9), #fdf4d8 100%);
+}
+/* the first stars come out as the sky darkens (and fade at sunrise) */
+.sky-dusk::after, .sky-dawn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 37px 41px, #fff 50%, transparent 52%),
+    radial-gradient(1.1px 1.1px at 162px 118px, #ffe9a6 50%, transparent 52%),
+    radial-gradient(1px 1px at 251px 23px, #fff 50%, transparent 52%),
+    radial-gradient(1.7px 1.7px at 318px 147px, #ffd76a 50%, transparent 52%),
+    radial-gradient(1.2px 1.2px at 96px 189px, #fff 50%, transparent 52%),
+    radial-gradient(1px 1px at 402px 76px, #fff 50%, transparent 52%),
+    radial-gradient(1.3px 1.3px at 207px 204px, #ffe9a6 50%, transparent 52%);
+  background-size: 443px 229px;
+}
+.sky-dusk::after {
+  -webkit-mask-image: linear-gradient(180deg, transparent 48%, #000 80%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 48%, #000 80%, transparent 100%);
+  opacity: 0.85;
+}
+.sky-dawn::after {
+  background-position: 120px 60px;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 22%, transparent 45%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 22%, transparent 45%);
+  opacity: 0.7;
+}
+/* mobile: the flag section is a short static banner, so keep the bands shorter */
+@media (max-width: 760px) { .sky-band { height: clamp(170px, 26vh, 240px); } }

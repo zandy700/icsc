@@ -344,6 +344,7 @@ function icscAutoRes(renderer, maxDpr, onChange) {
     var last = beatOpacity(N - 1, p);
     if (cta) { cta.style.opacity = last.toFixed(3); cta.classList.toggle("is-on", last > 0.6); }
     if (bar) bar.style.transform = "scaleX(" + p.toFixed(4) + ")";
+    if (bar) bar.style.opacity = p > 0.96 ? "0" : "1";   // no hard gold line where the sunrise begins
     if (hint) hint.style.opacity = p > 0.03 ? "0" : "1";
     if (dawn) dawn.style.opacity = p.toFixed(3);
   }
