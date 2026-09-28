@@ -344,6 +344,13 @@
   });
 
   /* ---------- section motion: entrance, pointer glow, card tilt ---------- */
+  if ("IntersectionObserver" in window) {
+    // pause ambient loops (stars, border, card bob) when the section is off screen
+    new IntersectionObserver(function (entries) {
+      section.classList.toggle("is-offscreen", !entries[0].isIntersecting);
+    }).observe(section);
+  }
+
   if (!reduced && "IntersectionObserver" in window) {
     section.classList.add("anim-ready");
     var io = new IntersectionObserver(function (entries) {

@@ -7,6 +7,28 @@
    All effects are opt-out under prefers-reduced-motion and degrade
    gracefully when WebGL / IntersectionObserver are unavailable.
    ============================================================= */
+/* Adaptive resolution: start at a capped pixel ratio and step it down
+   if the GPU can't hold ~50fps, so the page never drops to a 30Hz feel. */
+function icscAutoRes(renderer, maxDpr, onChange) {
+  var dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
+  renderer.setPixelRatio(dpr);
+  var acc = 0, n = 0, last = 0;
+  function sample(now) {
+    if (last) { var d = now - last; if (d < 100) { acc += d; n++; } }
+    last = now;
+    if (n >= 40) {
+      var avg = acc / n; acc = 0; n = 0;
+      if (avg > 19 && dpr > 1) {
+        dpr = Math.max(1, dpr - 0.25);
+        renderer.setPixelRatio(dpr);
+        onChange();
+      }
+    }
+  }
+  sample.reset = function () { last = 0; acc = 0; n = 0; };
+  return sample;
+}
+
 (function () {
   "use strict";
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -102,11 +124,11 @@
 
     var renderer;
     try {
-      renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: (window.devicePixelRatio || 1) < 1.5, alpha: true, powerPreference: "high-performance" });
     } catch (err) { return; }                   // no WebGL -> fallback card stays
 
     var small = window.innerWidth < 700;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, small ? 1.5 : 2));
+    var autoRes = icscAutoRes(renderer, 1.5, function () { resize(); });
     renderer.setClearColor(0x000000, 0);
 
     host.classList.add("webgl-on");             // hide fallback, show canvas
@@ -256,18 +278,22 @@
     function tick() {
       if (running) return;
       running = true;
-      (function loop() {
+      autoRes.reset();
+      clock.getDelta();
+      (function loop(now) {
         if (!visible) { running = false; return; }
+        if (now) autoRes(now);
         var dt = Math.min(clock.getDelta(), 0.05);
         var t = clock.elapsedTime;
+        var k = dt * 60;                          // same speed at 60, 120 or 144Hz
         group.children.forEach(function (o) {
           var u = o.userData;
-          o.rotation.x += u.rx; o.rotation.y += u.ry;
+          o.rotation.x += u.rx * k; o.rotation.y += u.ry * k;
           o.position.y = u.baseY + Math.sin(t * u.spd + u.phase) * u.amp;
         });
         spinY += dt * 0.16;
-        extraY += ((pointerX * 0.5) - extraY) * 0.05;
-        tiltX += ((pointerY * 0.45) - tiltX) * 0.05;
+        extraY += ((pointerX * 0.5) - extraY) * Math.min(1, 0.05 * k);
+        tiltX += ((pointerY * 0.45) - tiltX) * Math.min(1, 0.05 * k);
         group.rotation.y = spinY + extraY;
         group.rotation.x = tiltX;
         renderer.render(scene, camera);
@@ -297,6 +323,7 @@
   var cta    = section.querySelector(".scrub-cta");
   var bar    = section.querySelector(".scrub-progress span");
   var hint   = section.querySelector(".scrub-hint");
+  var dawn   = section.querySelector(".scrub-dawn");
   var N = beats.length;
 
   var desktop = window.matchMedia("(min-width: 761px)");
@@ -316,9 +343,9 @@
     }
     var last = beatOpacity(N - 1, p);
     if (cta) { cta.style.opacity = last.toFixed(3); cta.classList.toggle("is-on", last > 0.6); }
-    if (bar) bar.style.width = (p * 100).toFixed(2) + "%";
+    if (bar) bar.style.transform = "scaleX(" + p.toFixed(4) + ")";
     if (hint) hint.style.opacity = p > 0.03 ? "0" : "1";
-    sticky.style.setProperty("--dawn", p.toFixed(3));
+    if (dawn) dawn.style.opacity = p.toFixed(3);
   }
   function computeProgress() {
     var rect = section.getBoundingClientRect();
@@ -338,9 +365,9 @@
   if (!THREE || !canGL || !desktop.matches || reduced.matches) return;
 
   var renderer;
-  try { renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true }); }
+  try { renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: (window.devicePixelRatio || 1) < 1.5, alpha: true, powerPreference: "high-performance" }); }
   catch (e) { return; }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  var autoRes = icscAutoRes(renderer, 1.5, function () { resize(); });
   renderer.setClearColor(0x000000, 0);
 
   section.classList.add("is-live");
@@ -386,7 +413,7 @@
     return t;
   }
 
-  var FW = 6, FH = 3.16, SX = 60, SY = 30;
+  var FW = 6, FH = 3.16, SX = 44, SY = 22;
   var flagGeo = new THREE.PlaneGeometry(FW, FH, SX, SY);
   flagGeo.translate(FW / 2, 0, 0);               // hoist edge sits on the pole (x = 0)
   var pos = flagGeo.attributes.position;
@@ -475,7 +502,7 @@
     var i = 0;
     while (i < KEYS.length - 2 && p > KEYS[i + 1][0]) i++;
     var A = KEYS[i], B = KEYS[i + 1], t = smooth(A[0], B[0], p);
-    sp.x += (pointer.x - sp.x) * 0.06; sp.y += (pointer.y - sp.y) * 0.06;
+    sp.x += (pointer.x - sp.x) * 0.08; sp.y += (pointer.y - sp.y) * 0.08;
     camera.position.set(lerp(A[1], B[1], t) + sp.x * 1.4, lerp(A[2], B[2], t) - sp.y * 0.8, lerp(A[3], B[3], t));
     look.set(lerp(A[4], B[4], t), lerp(A[5], B[5], t), 0);
     camera.lookAt(look);
@@ -514,13 +541,14 @@
   resize();
   window.addEventListener("resize", resize);
 
-  var visible = true, running = false;
-  function start() { if (running) return; running = true; requestAnimationFrame(loop); }
+  var visible = true, running = false, lastP = -1;
+  function start() { if (running) return; running = true; autoRes.reset(); requestAnimationFrame(loop); }
   function loop(now) {
     if (!visible) { running = false; return; }
+    autoRes(now);
     var p = computeProgress();
     frame(p, now);
-    paintCaptions(p);
+    if (Math.abs(p - lastP) > 0.0005) { paintCaptions(p); lastP = p; }   // touch the DOM only when scroll moved
     requestAnimationFrame(loop);
   }
   if ("IntersectionObserver" in window) {

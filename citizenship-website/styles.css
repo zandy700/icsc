@@ -26,7 +26,7 @@ body {
 .container { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 
 /* HEADER */
-.site-header { position: sticky; top: 0; z-index: 50; background: rgba(253,244,216,0.92); backdrop-filter: saturate(140%) blur(10px); border-bottom: 1px solid var(--border); }
+.site-header { position: sticky; top: 0; z-index: 50; background: rgba(253,244,216,0.98); border-bottom: 1px solid var(--border); }
 .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 24px; }
 .logo { display: flex; align-items: center; gap: 10px; color: var(--navy); font-family: 'Fraunces', Georgia, serif; font-weight: 900; font-size: 1.1rem; text-decoration: none; }
 .logo-mark { color: var(--yellow); font-size: 1.4rem; line-height: 1; }
@@ -198,9 +198,11 @@ body {
 .scrub-progress span {
   display: block;
   height: 100%;
-  width: 0%;
+  width: 100%;
   background: var(--yellow);
-  transition: width 0.08s linear;
+  transform: scaleX(0);
+  transform-origin: left;
+  will-change: transform;
 }
 .scrub-hint {
   position: absolute;
@@ -228,13 +230,22 @@ body {
   height: 100vh;
   min-height: 100vh;
 }
-.scrub.is-live .scrub-canvas { will-change: transform; }
+.scrub.is-live .scrub-canvas { transform: translateZ(0); }
 /* night sky that warms toward dawn as you scroll (--dawn: 0 → 1, set by JS) */
 .scrub.is-live .scrub-sticky {
   background:
-    radial-gradient(130% 70% at 50% 118%, rgba(255,176,84,calc(var(--dawn, 0) * 0.75)) 0%, rgba(255,120,90,calc(var(--dawn, 0) * 0.25)) 35%, transparent 70%),
     radial-gradient(80% 60% at 18% 12%, rgba(90,120,220,0.35) 0%, transparent 60%),
     linear-gradient(180deg, #050d26 0%, #0b1d4a 55%, #173771 100%);
+}
+.scrub-dawn { display: none; }
+.scrub.is-live .scrub-dawn {
+  display: block;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  will-change: opacity;
+  pointer-events: none;
+  background: radial-gradient(130% 70% at 50% 118%, rgba(255,176,84,0.75) 0%, rgba(255,120,90,0.25) 35%, transparent 70%);
 }
 .scrub.is-live .scrub-scrim {
   background:
@@ -299,7 +310,6 @@ body {
   font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
   color: var(--navy); background: rgba(255,255,255,0.72);
   padding: 5px 11px; border-radius: 999px;
-  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
   pointer-events: none;
 }
 @media (max-width: 860px) { .hero-3d { min-height: 380px; } }
@@ -347,7 +357,6 @@ body {
    SIGNUP — multi-step wizard, live 3D "Tutoring Pass" card
    Without JS every step shows at once as a plain long form.
    ============================================================ */
-@property --su-ang { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
 
 .signup {
   position: relative;
@@ -360,7 +369,7 @@ body {
 .signup-sky { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
 .su-stars {
   position: absolute;
-  inset: -360px;
+  inset: 0;
   background-image:
     radial-gradient(1.6px 1.6px at 24px 36px, #fff 50%, transparent 52%),
     radial-gradient(1.2px 1.2px at 140px 90px, #ffe9a6 50%, transparent 52%),
@@ -368,15 +377,14 @@ body {
     radial-gradient(1.4px 1.4px at 190px 200px, #fff 50%, transparent 52%);
   background-size: 220px 220px;
   opacity: 0.5;
-  animation: suDriftA 80s linear infinite;
 }
 .su-stars-b {
   background-size: 340px 340px;
   opacity: 0.32;
-  animation: suDriftB 130s linear infinite, suTwinkle 3.6s ease-in-out infinite alternate;
+  background-position: 90px 60px;
+  will-change: opacity;
+  animation: suTwinkle 3.6s ease-in-out infinite alternate;
 }
-@keyframes suDriftA { to { transform: translate3d(-220px, 220px, 0); } }
-@keyframes suDriftB { to { transform: translate3d(340px, 340px, 0); } }
 @keyframes suTwinkle { from { opacity: 0.12; } to { opacity: 0.42; } }
 .su-glow {
   position: absolute;
@@ -416,9 +424,10 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: suShimmer 7s ease-in-out infinite;
+  background-position: 100% 0;
 }
-@keyframes suShimmer { 0%, 30% { background-position: 100% 0; } 70%, 100% { background-position: 0% 0; } }
+.signup.is-in .su-title { animation: suShimmer 2.4s ease-in-out 0.6s 1 both; }
+@keyframes suShimmer { from { background-position: 100% 0; } to { background-position: 0% 0; } }
 .su-lead { margin: 0; color: rgba(255,255,255,0.8); font-size: 1.1rem; }
 
 .signup-grid {
@@ -605,8 +614,8 @@ body {
   height: 26px;
   margin-top: 26px;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(0,0,0,0.5) 0%, transparent 70%);
-  filter: blur(3px);
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.18) 45%, transparent 72%);
+  will-change: transform;
   animation: suShadow 6s ease-in-out infinite;
 }
 @keyframes suShadow { 0%, 100% { transform: scaleX(1); opacity: 0.9; } 50% { transform: scaleX(0.84); opacity: 0.55; } }
@@ -637,13 +646,26 @@ body {
 /* ---------- right: the form card ---------- */
 .su-form-wrap {
   position: relative;
+  isolation: isolate;
+  overflow: hidden;
   padding: 2px;
   border-radius: 26px;
-  background: conic-gradient(from var(--su-ang), rgba(245,197,66,0.95), rgba(255,255,255,0.08) 22%, rgba(255,255,255,0.08) 50%, rgba(255,221,107,0.9) 72%, rgba(255,255,255,0.08) 90%, rgba(245,197,66,0.95));
+  background: rgba(255,255,255,0.08);
   box-shadow: 0 40px 90px -30px rgba(2,8,26,0.8);
+}
+.su-form-wrap::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%; top: 50%;
+  width: 260%;
+  aspect-ratio: 1;
+  background: conic-gradient(rgba(245,197,66,0.95), rgba(255,255,255,0.06) 22%, rgba(255,255,255,0.06) 50%, rgba(255,221,107,0.9) 72%, rgba(255,255,255,0.06) 90%, rgba(245,197,66,0.95));
+  transform: translate(-50%, -50%) rotate(0deg);
+  will-change: transform;
   animation: suBorderSpin 9s linear infinite;
 }
-@keyframes suBorderSpin { to { --su-ang: 360deg; } }
+@keyframes suBorderSpin { to { transform: translate(-50%, -50%) rotate(360deg); } }
 .su-form {
   position: relative;
   border-radius: 24px;
@@ -998,13 +1020,13 @@ body {
 .su-submit::before {
   content: "";
   position: absolute;
-  top: 0; bottom: 0; left: -60%;
+  top: 0; bottom: 0; left: 0;
   width: 40%;
   background: linear-gradient(100deg, transparent, rgba(255,255,255,0.35), transparent);
-  transform: skewX(-20deg);
+  transform: translateX(-150%) skewX(-20deg);
   animation: suShine 3.4s ease-in-out infinite;
 }
-@keyframes suShine { 0%, 55% { left: -60%; } 100% { left: 130%; } }
+@keyframes suShine { 0%, 55% { transform: translateX(-150%) skewX(-20deg); } 100% { transform: translateX(330%) skewX(-20deg); } }
 .su-spinner { display: none; width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.35); border-top-color: #fff; border-radius: 50%; animation: suSpinR 0.7s linear infinite; }
 @keyframes suSpinR { to { transform: rotate(360deg); } }
 .su-form.is-sending .su-spinner { display: inline-block; }
@@ -1159,3 +1181,6 @@ body {
 }
 .scrub .scrub-cta.btn-primary { background: var(--yellow); color: var(--navy); }
 .scrub .scrub-cta.btn-primary:hover { background: var(--yellow-2); }
+
+/* pause the signup section's ambient loops while it's off screen */
+.signup.is-offscreen *, .signup.is-offscreen *::before, .signup.is-offscreen *::after { animation-play-state: paused !important; }
