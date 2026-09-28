@@ -26,7 +26,9 @@ body {
 .container { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 
 /* HEADER */
-.site-header { position: sticky; top: 0; z-index: 50; background: rgba(253,244,216,0.98); border-bottom: 1px solid var(--border); }
+.site-header { position: sticky; top: 0; z-index: 50; background: rgba(253,244,216,0.98); border-bottom: 1px solid var(--border); transition: background-color 0.35s ease, border-color 0.35s ease; }
+/* at the very top the header is part of the daytime sky; it turns cream once you scroll */
+.site-header.at-top { background: #a9c8ef; border-bottom-color: transparent; }
 .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 24px; }
 .logo { display: flex; align-items: center; gap: 10px; color: var(--navy); font-family: 'Fraunces', Georgia, serif; font-weight: 900; font-size: 1.1rem; text-decoration: none; }
 .logo-mark { color: var(--yellow); font-size: 1.4rem; line-height: 1; }
@@ -41,7 +43,16 @@ body {
 @media (max-width: 760px) { .nav { display: none; } }
 
 /* HERO */
-.hero { position: relative; padding: 70px 0 60px; background: radial-gradient(circle at 12% 22%, var(--yellow-2) 0 6px, transparent 7px), radial-gradient(circle at 88% 78%, var(--yellow-2) 0 6px, transparent 7px), linear-gradient(180deg, var(--cream) 0, var(--cream-2) 100%); overflow: hidden; }
+/* daytime sky: blue overhead, warming toward the horizon, where the sunset band takes over */
+.hero {
+  position: relative;
+  padding: 70px 0 60px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 88% 78%, var(--yellow-2) 0 6px, transparent 7px),
+    radial-gradient(55% 70% at 74% 42%, rgba(255,236,178,0.55) 0%, rgba(255,236,178,0) 65%),
+    linear-gradient(180deg, #a9c8ef 0%, #bcd4f3 22%, #d2e1f5 45%, #e6ebef 66%, #f4e8d3 86%, #fbecbf 100%);
+}
 .hero-inner { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; }
 .eyebrow { text-transform: uppercase; letter-spacing: 0.16em; font-weight: 700; font-size: 0.78rem; color: var(--navy); margin: 0 0 12px; }
 .hero h1 { font-family: 'Fraunces', Georgia, serif; font-weight: 900; color: var(--navy); font-size: clamp(2.4rem, 5.4vw, 3.8rem); line-height: 1.02; margin: 0 0 18px; letter-spacing: -0.01em; }
@@ -1154,7 +1165,7 @@ body {
    ============================================================ */
 .sky-band { position: relative; z-index: 3; height: clamp(240px, 36vh, 400px); pointer-events: none; }
 .sky-dusk {
-  margin: -1px 0 -90px;
+  margin: 0 0 -90px;
   /* colour stops live in the top (100% - 90px); the last 90px fades out over the flag section */
   background: linear-gradient(180deg,
     #fbecbf 0%, #f9dfae calc((100% - 90px) * 0.12), #f4c797 calc((100% - 90px) * 0.25), #e8a58a calc((100% - 90px) * 0.38), #c98189 calc((100% - 90px) * 0.5),

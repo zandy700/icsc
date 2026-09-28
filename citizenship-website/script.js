@@ -405,6 +405,16 @@ document.querySelectorAll(".lang-switch button").forEach(btn => {
 
 // Signup wizard, N/A toggles and the schedule picker live in signup.js.
 
+// ---------- Header blends into the sky hero until you scroll ----------
+(() => {
+  const header = document.querySelector(".site-header");
+  if (!header) return;
+  let ticking = false;
+  const update = () => { header.classList.toggle("at-top", window.scrollY < 8); ticking = false; };
+  window.addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+  update();
+})();
+
 // ---------- Footer year ----------
 document.getElementById("year").textContent = new Date().getFullYear();
 
