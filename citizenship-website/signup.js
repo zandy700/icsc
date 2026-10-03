@@ -1,20 +1,16 @@
 /* =============================================================
-   Interlake ICSC — signup
-   - 4-step wizard with 3D page turns (plain long form without JS)
-   - Live 3D "Tutoring Pass" card that fills in as you type,
-     flips to show your week on the schedule step
-   - N/A switches, per-day schedule picker, review + edit
-   - Confetti launch on submit
+   Interlake ICSC — signup page (/signup/)
+   - 4-step wizard (Contact, About you, Schedule, Review);
+     without JS every step shows at once as a plain long form
+   - N/A switches, per-day schedule picker, review with Edit links
    Field names are unchanged so FormSubmit emails look the same.
    ============================================================= */
 (function () {
   "use strict";
 
-  var section = document.getElementById("signup");
   var form = document.getElementById("signup-form");
-  if (!section || !form) return;
+  if (!form) return;
 
-  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function $(sel, root) { return (root || document).querySelector(sel); }
   function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
 
@@ -32,11 +28,7 @@
   var skip = $("#skip_schedule");
   var dayList = $("#day_list");
   var dayRows = $$(".su-day", dayList);
-  var card = $("#su-card");
-  var cardEls = {};
-  $$("[data-card]", card).forEach(function (el) { cardEls[el.getAttribute("data-card")] = el; });
-
-  var cur = 0, sending = false, manualFlip = null, swapTimer = null;
+  var cur = 0, sending = false;
 
   /* ---------- i18n helpers (I18N lives in script.js) ---------- */
   function lang() {
@@ -72,53 +64,26 @@
     if (email.closest(".su-field").classList.contains("is-invalid") && emailOk()) setEmailError(false);
   });
 
-  function validate(i) {
-    if (i === 0 && !emailOk()) { setEmailError(true); return false; }
-    return true;
-  }
-
-  function show(panel, focus) {
-    panels.forEach(function (p) { p.classList.remove("is-active", "is-leaving"); });
-    panel.classList.add("is-active");
-    if (focus) $(".su-panel-title", panel).focus({ preventScroll: true });
-  }
-
   function go(i, focus) {
     i = Math.max(0, Math.min(LAST, i));
     if (i === cur) return;
-    if (i > cur) {
-      for (var k = cur; k < i; k++) {
-        if (!validate(k)) {
-          if (k !== cur) go(k);
-          if (k === 0) setTimeout(function () { email.focus(); }, reduced ? 0 : 260);
-          return;
-        }
-      }
+    if (i > cur && cur === 0 && !emailOk()) {   // only step 1 has a required field
+      setEmailError(true);
+      email.focus();
+      return;
     }
-    form.setAttribute("data-dir", i > cur ? "fwd" : "back");
     cur = i;
-    manualFlip = null;
-    var to = panels[i];
-
-    clearTimeout(swapTimer);
-    if (reduced) {
-      show(to, focus);
-    } else {
-      panels.forEach(function (p) { if (p.classList.contains("is-active")) p.classList.add("is-leaving"); });
-      swapTimer = setTimeout(function () { show(to, focus); }, 190);
-    }
+    panels.forEach(function (p, k) { p.classList.toggle("is-active", k === i); });
     if (i === LAST) renderReview();
-    paintChrome();
-    syncCard();
+    paint();
+    if (focus) $(".su-panel-title", panels[i]).focus({ preventScroll: true });
 
-    // keep the top of the form in view when a tall step shrinks
+    // keep the top of the form in view when a step changes height
     var r = form.getBoundingClientRect();
-    if (r.top < 0 || r.top > window.innerHeight * 0.6) {
-      window.scrollTo({ top: window.pageYOffset + r.top - 90, behavior: reduced ? "auto" : "smooth" });
-    }
+    if (r.top < 70) window.scrollTo({ top: window.pageYOffset + r.top - 100, behavior: "smooth" });
   }
 
-  function paintChrome() {
+  function paint() {
     steps.forEach(function (s, k) {
       s.classList.toggle("is-active", k === cur);
       s.classList.toggle("is-done", k < cur);
@@ -154,14 +119,13 @@
         field.dataset.prev = field.value;
         if (isDate) field.type = "text"; // a date input can't hold "N/A"
         field.value = "N/A";
-        field.readOnly = true; // read-only (not disabled) so "N/A" is still submitted
+        field.readOnly = true;           // read-only (not disabled) so "N/A" is still submitted
       } else {
         field.readOnly = false;
         if (isDate) field.type = "date";
         field.value = field.dataset.prev || "";
       }
       wrap.classList.toggle("is-na", cb.checked);
-      syncCard();
     });
   });
 
@@ -170,14 +134,11 @@
     return dayRows.map(function (row) {
       return {
         row: row,
-        day: row.getAttribute("data-day"),
         key: $(".su-day-name", row).getAttribute("data-i18n"),
-        times: $$(".chip input:checked", row).map(function (c) { return c.value; }),
-        total: $$(".chip input", row).length
+        times: $$(".su-times input:checked", row).map(function (c) { return c.value; })
       };
     });
   }
-
   function slotsText(n) { return n === 1 ? t("su.slot1") : t("su.slots", n); }
 
   function updateSchedule() {
@@ -188,7 +149,6 @@
       d.row.classList.toggle("has-picks", d.times.length > 0);
     });
     $(".su-slot-total", form).textContent = n ? slotsText(n) : "";
-    syncCard();
   }
 
   dayRows.forEach(function (row) {
@@ -196,10 +156,10 @@
     toggle.addEventListener("change", function () {
       row.classList.toggle("is-open", toggle.checked);
       // closing a day clears its times so hidden picks never get submitted
-      if (!toggle.checked) $$(".chip input", row).forEach(function (c) { c.checked = false; });
+      if (!toggle.checked) $$(".su-times input", row).forEach(function (c) { c.checked = false; });
       updateSchedule();
     });
-    $$(".chip input", row).forEach(function (c) { c.addEventListener("change", updateSchedule); });
+    $$(".su-times input", row).forEach(function (c) { c.addEventListener("change", updateSchedule); });
   });
 
   skip.addEventListener("change", function () {
@@ -212,68 +172,18 @@
     updateSchedule();
   });
 
-  /* ---------- live pass card ---------- */
+  /* ---------- review step ---------- */
   function parseDate(v) {
     var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || "");
     return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
   }
-  function fmtDate(d) {
-    return d.toLocaleDateString(locale(), { month: "short", day: "numeric", year: "numeric" });
-  }
 
-  function syncCard() {
-    var e = email.value.trim();
-    cardEls.email.textContent = e || "you@example.com";
-    cardEls.email.classList.toggle("is-empty", !e);
-    cardEls.lang.textContent = nativeLang.value.trim() || "—";
-
-    var d = parseDate(testDate.value);
-    cardEls.date.textContent = d ? fmtDate(d) : (testDate.value || "—");
-    var count = "";
-    if (d) {
-      var today = new Date(); today.setHours(0, 0, 0, 0);
-      var days = Math.round((d - today) / 86400000);
-      if (days === 0) count = t("su.today");
-      else if (days === 1) count = t("su.day1");
-      else if (days > 1) count = t("su.days", days);
-    }
-    cardEls.count.textContent = count;
-
-    var n = 0;
-    schedule().forEach(function (dd) {
-      n += dd.times.length;
-      var col = $('.su-wday[data-wday="' + dd.day + '"]', card);
-      col.style.setProperty("--fill", dd.times.length / dd.total);
-      col.classList.toggle("is-on", dd.times.length > 0);
-    });
-    cardEls.slots.textContent = skip.checked ? t("su.sched.none") : slotsText(n);
-
-    card.classList.toggle("is-flipped", manualFlip !== null ? manualFlip : cur === 2);
-    card.classList.toggle("is-ready", cur === LAST && emailOk());
-  }
-
-  function localizeWeek() {
-    var labels = t("su.wk").split(",");
-    $$(".su-wlabel", card).forEach(function (el, i) { if (labels[i]) el.textContent = labels[i]; });
-  }
-
-  form.addEventListener("input", syncCard);
-  form.addEventListener("change", syncCard);
-
-  var stage = $(".su-stage");
-  stage.addEventListener("click", function () {
-    manualFlip = !card.classList.contains("is-flipped");
-    syncCard();
-  });
-
-  /* ---------- review step ---------- */
   function renderReview() {
     var dl = $("#su-review");
     dl.innerHTML = "";
     function row(label, value, step) {
       var wrap = document.createElement("div");
       wrap.className = "su-rv-row" + (value ? "" : " is-muted");
-      wrap.style.setProperty("--i", dl.children.length);
       var dt = document.createElement("dt"); dt.textContent = label;
       var dd = document.createElement("dd"); dd.textContent = value || t("su.none");
       var b = document.createElement("button");
@@ -291,47 +201,19 @@
     row(t("su.rv.email"), email.value.trim(), 0);
     row(t("form.phone"), phone.value.trim(), 0);
     row(t("form.lang"), nativeLang.value.trim(), 1);
-    row(t("su.card.test"), d ? fmtDate(d) : testDate.value.trim(), 1);
+    row(t("su.rv.test"), d ? d.toLocaleDateString(locale(), { month: "short", day: "numeric", year: "numeric" }) : testDate.value.trim(), 1);
     row(t("su.rv.sched"), skip.checked ? t("su.sched.none") : sched, 2);
   }
 
   /* ---------- submit ---------- */
-  function confetti(origin) {
-    if (reduced) return;
-    var r = origin.getBoundingClientRect();
-    var layer = document.createElement("div");
-    layer.className = "su-confetti";
-    layer.setAttribute("aria-hidden", "true");
-    layer.style.left = r.left + r.width / 2 + "px";
-    layer.style.top = r.top + r.height / 2 + "px";
-    var colors = ["#f5c542", "#ffdd6b", "#14306a", "#1e4391", "#ffffff", "#c0392b"];
-    for (var i = 0; i < 80; i++) {
-      var p = document.createElement("i");
-      var a = Math.random() * Math.PI * 2, dist = 110 + Math.random() * 280;
-      p.style.setProperty("--dx", Math.cos(a) * dist + "px");
-      p.style.setProperty("--dy", Math.sin(a) * dist * 0.8 - 170 + "px");
-      p.style.setProperty("--rot", Math.random() * 900 - 450 + "deg");
-      p.style.background = colors[i % colors.length];
-      p.style.animationDelay = Math.random() * 90 + "ms";
-      layer.appendChild(p);
-    }
-    document.body.appendChild(layer);
-    setTimeout(function () { layer.remove(); }, 1900);
-  }
-
   form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    if (sending) return;
-    if (cur < LAST) { go(cur + 1, true); return; }
-    if (!emailOk()) { go(0); setTimeout(function () { validate(0); email.focus(); }, reduced ? 0 : 260); return; }
-
+    if (sending) { e.preventDefault(); return; }
+    if (cur < LAST) { e.preventDefault(); go(cur + 1, true); return; }
+    if (!emailOk()) { e.preventDefault(); go(0); setEmailError(true); email.focus(); return; }
     sending = true;
     form.classList.add("is-sending");
     $(".su-submit-text", form).textContent = t("su.sending");
-    card.classList.remove("is-flipped");
-    card.classList.add("is-launch");
-    confetti($(".su-submit", form));
-    setTimeout(function () { HTMLFormElement.prototype.submit.call(form); }, reduced ? 0 : 950);
+    // let the browser submit normally to FormSubmit
   });
 
   // coming back with the browser's Back button: un-stick the sending state
@@ -339,59 +221,17 @@
     if (!e.persisted) return;
     sending = false;
     form.classList.remove("is-sending");
-    card.classList.remove("is-launch");
     $(".su-submit-text", form).textContent = t("form.submit");
   });
 
-  /* ---------- section motion: entrance, pointer glow, card tilt ---------- */
-  if ("IntersectionObserver" in window) {
-    // pause ambient loops (stars, border, card bob) when the section is off screen
-    new IntersectionObserver(function (entries) {
-      section.classList.toggle("is-offscreen", !entries[0].isIntersecting);
-    }).observe(section);
-  }
-
-  if (!reduced && "IntersectionObserver" in window) {
-    section.classList.add("anim-ready");
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) { section.classList.add("is-in"); io.disconnect(); }
-      });
-    }, { threshold: 0.12 });
-    io.observe(section);
-    setTimeout(function () { section.classList.add("is-in"); }, 9000); // failsafe
-  }
-
-  if (!reduced && window.matchMedia("(hover:hover) and (pointer:fine)").matches) {
-    // Tilt the card by writing its transform directly (no CSS variables on
-    // ancestors, no always-on layers elsewhere in the section).
-    var tilt = $(".su-tilt"), pending = null;
-    var px = 0, py = 0;
-    section.addEventListener("pointermove", function (ev) {
-      px = ev.clientX; py = ev.clientY;
-      if (pending) return;
-      pending = requestAnimationFrame(function () {
-        pending = null;
-        var r = stage.getBoundingClientRect();
-        if (!r.width) return;                     // card hidden on small screens
-        var nx = Math.max(-1, Math.min(1, (px - (r.left + r.width / 2)) / (window.innerWidth / 2)));
-        var ny = Math.max(-1, Math.min(1, (py - (r.top + r.height / 2)) / (window.innerHeight / 2)));
-        tilt.style.transform = "rotateX(" + (9 - ny * 16).toFixed(2) + "deg) rotateY(" + (-16 + nx * 26).toFixed(2) + "deg)";
-      });
-    });
-    section.addEventListener("pointerleave", function () { tilt.style.transform = ""; });
-  }
-
   /* ---------- language switch ---------- */
   document.addEventListener("icsc:lang", function () {
-    localizeWeek();
-    paintChrome();
+    paint();
     updateSchedule();
     if (cur === LAST) renderReview();
     if (sending) $(".su-submit-text", form).textContent = t("su.sending");
   });
 
-  localizeWeek();
-  paintChrome();
+  paint();
   updateSchedule();
 })();

@@ -1,53 +1,66 @@
 # Interlake Citizenship Services Club — Website
 
-A static, SEO-friendly site for the Interlake Citizenship Services Club (ICSC). Three-language UI (English / Spanish / Chinese), signup form that emails to `interlakecitizenshipclub@gmail.com`.
+Static, SEO-friendly multi-page site for the Interlake Citizenship Services Club (ICSC),
+live at **https://interlakecitizenship.xyz**. Three-language UI (English / Spanish / 中文),
+signup form that emails `interlakecitizenshipclub@gmail.com`, and CivicPreps.com
+(free civics-test practice) featured on every page.
 
-## Files
+## Pages (clean URLs)
 
-- `index.html` — main page (hero, about, coverage, how it works, reviews, signup, contact)
-- `styles.css` — styling, color palette matched to the flier
-- `script.js` — language switcher (EN/ES/ZH), N/A toggles, footer year
-- `thanks.html` — confirmation page after form submit
-- `robots.txt`, `sitemap.xml` — SEO helpers
+| URL | File |
+|---|---|
+| `/` | `index.html` — home |
+| `/about` | `about/index.html` |
+| `/how-it-works` | `how-it-works/index.html` (steps, meeting times, FAQ) |
+| `/reviews` | `reviews/index.html` |
+| `/practice` | `practice/index.html` — CivicPreps page |
+| `/signup` | `signup/index.html` — 4-step signup form |
+| `/contact` | `contact/index.html` |
+| `/thanks` | `thanks/index.html` — after a signup is submitted |
+| anything else | `404.html` |
 
-## Activating the signup form (one-time, ~1 minute)
+GitHub Pages serves `folder/index.html` at `/folder`, which is what gives each page its own URL.
+Old one-page links such as `interlakecitizenship.xyz/#signup` forward to the new pages, and the old
+`thanks.html` forwards to `/thanks/`.
 
-The form posts to **FormSubmit.co**, a free email-forwarding service. No account needed, but you must activate it once:
+## Editing the site
 
-1. Open the deployed site and submit **one test signup** through the form.
-2. Check the inbox of `interlakecitizenshipclub@gmail.com` for an email from FormSubmit titled "Confirm your email".
-3. Click the **Confirm Email** button in that message.
-4. Done — all future submissions will arrive at that inbox as nicely formatted tables.
+The HTML pages are **generated** — edit the generator, then rebuild:
 
-To use a different email later, change this line in `index.html`:
-
-```html
-<form ... action="https://formsubmit.co/YOUR_EMAIL@gmail.com" method="POST">
+```bash
+python3 tools/build_site.py
 ```
 
-### Form features
-- Each field (email, native language, test date, phone, preferred time) has an **N/A** option.
-- Spam-protected by a hidden honeypot and an optional CAPTCHA (`_captcha` is `true`).
-- Submissions redirect to `thanks.html`.
+`tools/build_site.py` (repo root, not published) holds the shared header, footer, CivicPreps blocks
+and every page's content. Edit it once and all pages stay consistent.
 
-## Hosting
+Other files in this folder:
 
-This is a static site. Drop the folder into any of these — all free:
+- `styles.css` — the whole design system (colors, buttons, cards, header, signup form, footer)
+- `script.js` — all EN/ES/中文 text (`I18N`), language switcher, mobile menu, old-link redirects
+- `signup.js` — the signup wizard, N/A switches and schedule picker (signup page only)
+- `assets/civicpreps-logo.png` — CivicPreps logo
+- `sitemap.xml` (generated), `robots.txt`, `google…html` (Search Console verification)
 
-- **GitHub Pages** — push the repo and turn on Pages in repo settings.
-- **Netlify / Vercel / Cloudflare Pages** — drag-and-drop or connect the GitHub repo.
+To change wording, edit the English text in `tools/build_site.py` **and** the matching key in
+`script.js` (all three languages), then rebuild.
 
-For best SEO once deployed:
-- Replace the `<loc>` paths in `sitemap.xml` and the `og:url`/canonical URLs in `index.html` with your real domain.
-- Submit the sitemap in Google Search Console.
+## CivicPreps placement
 
-## SEO included out of the box
-- Descriptive `<title>` and `<meta description>` with target keywords.
-- Open Graph + Twitter card tags for social previews.
-- JSON-LD structured data (`EducationalOrganization`) so Google understands what the club is.
-- Semantic HTML5 (`<header>`, `<main>`, `<section>`, `<nav>`, `<footer>`).
-- Mobile-responsive layout.
-- `robots.txt` + `sitemap.xml`.
+CivicPreps.com shows up on every page so visitors can't miss it:
+the teal bar at the very top, the **Practice Test** button in the header (and phone menu),
+the large CivicPreps section on the home page and other pages, the `/practice` page,
+the signup and thank-you pages, and the footer.
 
-## Language switcher
-Top-right of the header. The site auto-detects browser language on first visit and remembers the choice in `localStorage`.
+## Signup form
+
+The form posts to **FormSubmit.co** (`signup/index.html`). Field names are unchanged:
+`email`, `phone`, `native_language`, `test_date`, `skip_schedule`, `Monday`…`Sunday`, `notes`.
+Any field marked **N/A** is sent as `N/A`. After submitting, people land on `/thanks/`.
+
+If the destination email ever changes, update `EMAIL` at the top of `tools/build_site.py` and rebuild.
+
+## Deploying
+
+Pushing to the deploy branch runs `.github/workflows/pages.yml`, which publishes this folder to
+GitHub Pages. The repository must stay **public** (or be on a paid plan) for GitHub Pages to work.
